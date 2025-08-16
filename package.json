@@ -9,8 +9,7 @@
 		"lint": "next lint",
 		"prettier:check": "npx prettier --check ./src/**/*.{js,jsx,ts,tsx}",
 		"prettier:write": "npx prettier --write ./src/**/*.{js,jsx,ts,tsx}",
-		"prepare": "husky install",
-		"lint-staged": "your-cmd"
+		"prepare": "husky install"
 	},
 	"dependencies": {
 		"mongoose": "^8.17.1",

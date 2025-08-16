@@ -1,20 +1,4 @@
 #!/usr/bin/env sh
-echo "🔍 Running Prettier on staged files..."
+echo "✅ Pre-commit hook triggered via lint-staged"
 
-# Get staged files that are added, copied, or modified
-STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(js|jsx|ts|tsx|json|css|scss|md|html)$')
-
-if [ -z "$STAGED_FILES" ]; then
-  echo "✅ No relevant staged files to format."
-  exit 0
-fi
-
-# Run Prettier to format the files
-npx prettier --write $STAGED_FILES
-
-# Re-add the files that were formatted
-echo "$STAGED_FILES" | xargs git add
-
-echo "✅ Prettier formatting complete and files re-staged."
-
-exit 0
+npx lint-staged
