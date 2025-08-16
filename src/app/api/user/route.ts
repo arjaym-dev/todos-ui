@@ -14,12 +14,13 @@ export async function POST(request: Request) {
 
 		const payload: CreateUser = await request.json()
 
-		// Validate payload
+		// Validate payload Test
 		await createUserSchema.validate(payload, { abortEarly: false })
 
 		// Check assign roles & Validate if user allow for creating user account
 		const roles = await Role.find({})
 
+		console.log(roles)
 		// Hash password
 
 		// Save user into collection
