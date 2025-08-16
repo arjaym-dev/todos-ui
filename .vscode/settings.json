@@ -5,6 +5,6 @@
 	"prettier.useTabs": true,
 	"prettier.semi": false,
 	"prettier.bracketSameLine": true,
-	"prettier.tabWidth": 2,
+	"prettier.tabWidth": 4,
 	"prettier.printWidth": 80
 }
