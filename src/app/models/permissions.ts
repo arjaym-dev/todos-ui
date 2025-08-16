@@ -8,4 +8,5 @@ const PermissionsSchema = new mongoose.Schema<Permissions>({
 	name: { type: String, required: [true, "Permissions is required"] },
 })
 
-export default mongoose.models.Permissions || mongoose.model<Permissions>("Permissions", PermissionsSchema)
+export default mongoose.models.Permissions ||
+	mongoose.model<Permissions>("Permissions", PermissionsSchema)

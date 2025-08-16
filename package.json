@@ -7,8 +7,8 @@
 		"build": "next build",
 		"start": "next start",
 		"lint": "next lint",
-		"prettier:check": "npx prettier --check ./src/**/*.{js,jsx,ts,tsx}",
-		"prettier:write": "npx prettier --write ./src/**/*.{js,jsx,ts,tsx}",
+		"prettier:check": "npx prettier --check ./src/**/*.{ts,tsx}",
+		"prettier:write": "npx prettier --write ./src/**/*.{ts,tsx}",
 		"prepare": "husky install"
 	},
 	"dependencies": {

@@ -17,4 +17,5 @@ const UsersSchema = new mongoose.Schema<Users>({
 	roleId: { type: String, required: [true, "Role is required"] },
 })
 
-export default mongoose.models.Users || mongoose.model<Users>("Users", UsersSchema)
+export default mongoose.models.Users ||
+	mongoose.model<Users>("Users", UsersSchema)

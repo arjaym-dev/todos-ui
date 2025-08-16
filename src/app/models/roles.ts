@@ -12,4 +12,5 @@ const RolesSchema = new mongoose.Schema<Roles>({
 	permissions: { type: [], required: [true, "Permissions is required"] },
 })
 
-export default mongoose.models.Roles || mongoose.model<Roles>("Roles", RolesSchema)
+export default mongoose.models.Roles ||
+	mongoose.model<Roles>("Roles", RolesSchema)

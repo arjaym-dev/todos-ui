@@ -23,7 +23,10 @@ export async function POST(request: Request) {
 		// Hash password
 
 		// Save user into collection
-		return Response.json({ message: "Test" }, { status: 201, statusText: "Created" })
+		return Response.json(
+			{ message: "Test" },
+			{ status: 201, statusText: "Created" },
+		)
 	} catch (error) {
 		let resError: { [key: string]: string } = {},
 			status = 500
