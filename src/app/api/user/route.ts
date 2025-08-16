@@ -14,7 +14,7 @@ export async function POST(request: Request) {
 
 		const payload: CreateUser = await request.json()
 
-		// Validate payload Test
+		// Validate payload
 		await createUserSchema.validate(payload, { abortEarly: false })
 
 		// Check assign roles & Validate if user allow for creating user account
