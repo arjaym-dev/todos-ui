@@ -1,1 +1,1 @@
-{ "*.{js,jsx,ts,tsx,json,css,scss,md,html}": "npm run prettier:write" }
+{ "*.{js,jsx,ts,tsx,json,css,scss,md,html}": "prettier --write" }

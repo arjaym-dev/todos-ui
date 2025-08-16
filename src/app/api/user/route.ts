@@ -20,7 +20,6 @@ export async function POST(request: Request) {
 		// Check assign roles & Validate if user allow for creating user account
 		const roles = await Role.find({})
 
-		console.log(roles)
 		// Hash password
 
 		// Save user into collection
