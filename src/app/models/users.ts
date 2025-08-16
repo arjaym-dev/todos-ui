@@ -11,7 +11,6 @@ const UsersSchema = new mongoose.Schema<Users>({
 	password: {
 		type: String,
 		minLength: [6, "Password is min. of 6 chars."],
-		maxlength: [16, "Password is min. of 16 chars."],
 		required: [true, "Password is required"],
 	},
 	roleId: { type: String, required: [true, "Role is required"] },
