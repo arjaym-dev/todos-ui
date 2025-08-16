@@ -1,15 +1,11 @@
-import mongoose from "mongoose";
+import mongoose from "mongoose"
 
 export interface Permissions extends mongoose.Document {
-  name: string;
+	name: string
 }
 
 const PermissionsSchema = new mongoose.Schema<Permissions>({
-  name: {
-    type: String,
-    required: [true, "Permissions is required"],
-  },
-});
+	name: { type: String, required: [true, "Permissions is required"] },
+})
 
-export default mongoose.models.Permissions ||
-  mongoose.model<Permissions>("Permissions", PermissionsSchema);
+export default mongoose.models.Permissions || mongoose.model<Permissions>("Permissions", PermissionsSchema)
