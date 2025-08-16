@@ -8,14 +8,14 @@ import bcrypt from "bcrypt"
 import Role, { Roles } from "@/app/models/roles"
 import Users from "@/app/models/users"
 
-import { CreateUser, createUserSchema } from "@/shared/validation/users"
+import { TCreateUser, createUserSchema } from "@/shared/validation/users"
 import dbConnect from "@/shared/lib/db-connect"
 
 export async function POST(request: Request) {
 	try {
 		await dbConnect()
 
-		const payload: CreateUser = await request.json()
+		const payload: TCreateUser = await request.json()
 
 		// Validate payload
 		await createUserSchema.validate(payload, { abortEarly: false })

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import mongoose from "mongoose"
 
+import ENV from "./env"
 declare global {
 	var mongoose: any // This must be a `var` and not a `let / const`
 }
@@ -12,7 +13,7 @@ if (!cached) {
 }
 
 async function dbConnect() {
-	const MONGODB_URI = process.env.MONGODB_URI!
+	const MONGODB_URI = ENV.MONGODB_URI!
 
 	if (!MONGODB_URI) {
 		throw new Error(
