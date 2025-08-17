@@ -40,7 +40,7 @@ export async function POST(req: Request) {
 
 		// create auth token
 		const sessionPayload = {
-			_id: user._id,
+			_id: user._id.toString(),
 			username: user.username,
 			roleId: user.roleId,
 		}
