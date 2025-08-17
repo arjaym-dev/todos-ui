@@ -44,6 +44,7 @@ export async function POST(req: Request) {
 			username: user.username,
 			roleId: user.roleId,
 		}
+
 		await createSession(sessionPayload)
 
 		// Proceed to login details
@@ -54,9 +55,9 @@ export async function POST(req: Request) {
 
 		if (error instanceof ValidationError) {
 			// Validate payload send error message
-			error.inner.forEach((err: any) => {
-				const path = err.path
-				const message = err.message
+			error.inner.forEach((err: ValidationError) => {
+				const path = err.path as string
+				const message = err.message as string
 
 				resError[path] = message
 			})

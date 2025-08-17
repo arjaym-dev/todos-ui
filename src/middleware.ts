@@ -5,18 +5,14 @@ import { apiAuthMiddleware } from "./app/api/middleware"
 export async function middleware(req: Request) {
 	const apiAuthResponse = await apiAuthMiddleware(req)
 
-	if (
-		apiAuthResponse.status === 401 &&
-		apiAuthResponse.statusText === "Authentication failed, no session"
-	) {
+	if (apiAuthResponse.status === 401) {
 		return Response.json(
 			{ message: apiAuthResponse.statusText },
 			{ status: apiAuthResponse.status },
 		)
 	}
 
-	console.log("root middleware")
-	return Response.json({})
+	return Response.next({})
 }
 
 export const config = {

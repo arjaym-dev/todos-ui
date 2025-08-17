@@ -2,6 +2,8 @@
 import "server-only"
 
 import { SignJWT, jwtVerify, JWTPayload } from "jose"
+import { cookies } from "next/headers"
+import { JWTExpired, JWTInvalid, JWSInvalid } from "jose/errors"
 
 import { TSessionPayload } from "../validation/users"
 import ENV from "./env"
@@ -21,16 +23,25 @@ export async function decrypt(session: string | undefined = "") {
 		const { payload } = await jwtVerify(session, encodedKey, {
 			algorithms: ["HS256"],
 		})
+
 		return payload
 	} catch (error) {
-		console.log("Failed to verify session")
+		let err = ""
+
+		if (error instanceof JWTExpired) {
+			err = "JWTExpired"
+		} else if (error instanceof JWSInvalid) {
+			err = "JWSInvalid"
+		}
+
+		return err
 	}
 }
 
-import { cookies } from "next/headers"
-
 export async function createSession(payload: TSessionPayload) {
-	const expiresAt = new Date(Date.now() + 1 * 60 * 60 * 1000)
+	const expiresAt = new Date(Date.now() + 1 * 60 * 60 * 1000) // 1 hr
+	// const expiresAt = new Date(Date.now() + 1 * 60 * 1000) // 1 min
+	// const expiresAt = new Date(Date.now() + 5 * 60 * 1000) // 5 min
 	const session = await encrypt({ ...payload, expiresAt })
 	const cookieStore = await cookies()
 

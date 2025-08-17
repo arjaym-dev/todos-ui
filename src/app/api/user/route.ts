@@ -10,36 +10,47 @@ import Users from "@/app/models/users"
 
 import { TCreateUser, createUserSchema } from "@/shared/validation/users"
 import dbConnect from "@/shared/lib/db-connect"
+import { decrypt } from "@/shared/lib/session"
+import { JWTPayload } from "jose"
+
+const handleCustomError = (
+	message: { [key: string]: string } = {},
+	status: number = 201,
+) => {
+	return Response.json(message, { status: status })
+}
 
 export async function POST(request: Request) {
 	try {
 		await dbConnect()
 
 		const payload: TCreateUser = await request.json()
+		const session = request.cookies.get("session")?.value
+		const sessionDecrypt = (await decrypt(session)) as JWTPayload
+
+		// validate if the user action is valid
+		const userActionRole = await Role.findById(sessionDecrypt.roleId)
+		if (userActionRole && userActionRole.roleId !== "ADMIN")
+			return handleCustomError(
+				{ message: "Invalid action, only admin can create account" },
+				401,
+			)
 
 		// Validate payload
 		await createUserSchema.validate(payload, { abortEarly: false })
 
 		// Validate if user already exist
 		const userExist = await Users.findOne({ username: payload.username })
-
 		if (userExist)
-			return Response.json(
+			return handleCustomError(
 				{ username: "Username already exist" },
-				{ status: 400 },
+				400,
 			)
 
-		// Check assign roles & Validate if user allow for creating user account
+		// Check assign roles & Validate
 		const roleById = await Role.findById(payload.roleId)
-
 		if (roleById == null)
-			return Response.json(
-				{ message: "Role does not exist" },
-				{ status: 400 },
-			)
-
-		if (roleById.roleId != "ADMIN")
-			return Response.json({ message: "Unauthorized" }, { status: 401 })
+			return handleCustomError({ message: "Role does not exist" }, 400)
 
 		// Hash password
 		const hashPassword = await bcrypt.hash(payload.password, 10)
