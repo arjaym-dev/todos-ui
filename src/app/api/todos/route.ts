@@ -158,7 +158,7 @@ export async function PUT(req: Request) {
 		const payload: TEditTask = await req.json()
 
 		// Validate payload
-		await deleteTaskSchema.validate(payload, { abortEarly: false })
+		await editTaskSchema.validate(payload, { abortEarly: false })
 
 		// Validate if the session token, is really the user that creating the task
 		const user = await users.findById(payload.userId)
