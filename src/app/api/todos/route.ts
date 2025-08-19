@@ -19,6 +19,62 @@ import {
 import { payloadValidationErrors } from "@/shared/handler/payload-validation"
 import { decrypt } from "@/shared/lib/session"
 
+// Get todos
+export async function GET(req: Request) {
+	try {
+		await dbConnect()
+		const session = req.cookies.get("session")?.value
+		const sessionDecrypt = (await decrypt(session)) as JWTPayload
+
+		const userId = req.nextUrl.searchParams.get("userId")
+
+		// Validate if the session token, is really the user that creating the task
+
+		const user = await users.findById(userId)
+		if (user) {
+			if (user._id.toString() !== sessionDecrypt._id) {
+				return Response.json(
+					{
+						message:
+							"Session user does not match on user id, invalid action",
+					},
+					{ status: 401 },
+				)
+			}
+		}
+
+		// Validate if the user, has permission if not throw error
+		const role = await roles.findById(sessionDecrypt.roleId)
+		if (role) {
+			const permissions = role.permissions
+
+			if (permissions.includes("API_TODOS_VIEW") === false) {
+				return Response.json(
+					{
+						message:
+							"User does not have permission for this action",
+					},
+					{ status: 401 },
+				)
+			}
+		}
+
+		// Get all task by userId
+		const tasks = await todos.find({ userId: userId })
+
+		return Response.json(tasks, { status: 200 })
+	} catch (error) {
+		let resError: { [key: string]: string } = {},
+			status = 500
+		console.log(error)
+		if (error instanceof MongooseError) {
+			resError = { message: error.message }
+			status = 400
+		}
+
+		return Response.json(resError, { status: status })
+	}
+}
 // Create task
 export async function POST(req: Request) {
 	try {
