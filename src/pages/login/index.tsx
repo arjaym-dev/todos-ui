@@ -1,12 +1,14 @@
-import React from "react"
+import React, { useRef } from "react"
 import { SxProps, Theme } from "@mui/material"
 
 import Grid from "@mui/material/Grid"
 import Box from "@mui/material/Box"
 import TextField, { TextFieldProps } from "@mui/material/TextField"
 import Button, { ButtonProps } from "@mui/material/Button"
+import { Formik, Form } from "formik"
+import { useMutation } from "@tanstack/react-query"
 
-import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query"
+import { TLoginUser, loginUserSchema } from "@/shared/validation/users"
 
 const ContainerSx: SxProps<Theme> = {
 	"&": {
@@ -24,15 +26,16 @@ const ContainerSx: SxProps<Theme> = {
 }
 
 const Login = () => {
-	const [form, setForm] = React.useState({ username: "", password: "" })
-	const [errors, setErrors] = React.useState({})
+	const innerRef = useRef(null)
+	const form = { username: "", password: "" }
+
 	const loginMutation = useMutation({
 		retry: false,
 		mutationKey: ["todos"],
-		mutationFn: async () => {
+		mutationFn: async (payload: TLoginUser) => {
 			const res = await fetch("/api/login", {
 				method: "POST",
-				body: JSON.stringify(form),
+				body: JSON.stringify(payload),
 			})
 
 			const data = await res.json()
@@ -50,58 +53,70 @@ const Login = () => {
 			return data
 		},
 		onError: (error: Error & { [key: string]: string }) => {
-			setErrors(error.validation)
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			const current = innerRef.current as any
+			if (current) {
+				current.setErrors(error.validation)
+			}
 		},
 	})
 
-	const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setForm((prevForm) => ({
-			...prevForm,
-			[e.target.name]: e.target.value,
-		}))
+	const handleOnSubmit = (values: TLoginUser) => {
+		loginMutation.mutate(values)
 	}
 
-	const handleSubmit = () => {
-		loginMutation.mutate()
-	}
-
-	const usernameProps: TextFieldProps = {
-		name: "username",
-		id: "username",
-		placeholder: "Username",
-		size: "small",
-		type: "text",
-		value: form.username,
-		onChange: handleOnChange,
-	}
-
-	const passwordProps: TextFieldProps = {
-		name: "password",
-		id: "password",
-		placeholder: "Password",
-		size: "small",
-		type: "password",
-		value: form.password,
-		onChange: handleOnChange,
-	}
-
-	const buttonProps: ButtonProps = {
-		disabled: loginMutation.isPending,
-		fullWidth: true,
-		variant: "contained",
-		size: "small",
-		onClick: handleSubmit,
-	}
-
-	console.log(errors)
 	return (
 		<Grid sx={ContainerSx} container size={12}>
 			<Grid size={{ xs: 12, sm: 6, md: 3 }}>
-				<Box className="form-wrapper">
-					<TextField {...usernameProps} />
-					<TextField {...passwordProps} />
-					<Button {...buttonProps}>Login</Button>
-				</Box>
+				<Formik
+					innerRef={innerRef}
+					initialValues={form}
+					validationSchema={loginUserSchema}
+					onSubmit={handleOnSubmit}>
+					{({ errors, values, handleChange }) => {
+						const usernameProps: TextFieldProps = {
+							error: errors.username ? true : false,
+							helperText: errors.username,
+							name: "username",
+							id: "username",
+							placeholder: "Username",
+							size: "small",
+							type: "text",
+							value: values.username,
+							onChange: handleChange,
+						}
+
+						const passwordProps: TextFieldProps = {
+							error: errors.password ? true : false,
+							helperText: errors.password,
+							name: "password",
+							id: "password",
+							placeholder: "Password",
+							size: "small",
+							type: "password",
+							value: values.password,
+							onChange: handleChange,
+						}
+
+						const buttonProps: ButtonProps = {
+							disabled: loginMutation.isPending,
+							fullWidth: true,
+							variant: "contained",
+							size: "small",
+							type: "submit",
+						}
+
+						return (
+							<Form>
+								<Box className="form-wrapper">
+									<TextField {...usernameProps} />
+									<TextField {...passwordProps} />
+									<Button {...buttonProps}>Login</Button>
+								</Box>
+							</Form>
+						)
+					}}
+				</Formik>
 			</Grid>
 		</Grid>
 	)
