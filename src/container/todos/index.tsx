@@ -1,88 +1,76 @@
-import React, { useState } from "react"
+import React, { useState, useRef } from "react"
 
-import Table from "@mui/material/Table"
-import TableContainer from "@mui/material/TableContainer"
-import TableBody from "@mui/material/TableBody"
-import TableCell from "@mui/material/TableCell"
-import TableHead from "@mui/material/TableHead"
-import TableRow from "@mui/material/TableRow"
 import Button from "@mui/material/Button"
 import Box from "@mui/material/Box"
 import TextField, { TextFieldProps } from "@mui/material/TextField"
 
-import { TTask } from "@/shared/types/todos"
+import { Formik, Form } from "formik"
 
+import { TCreateTask } from "@/shared/types/todos"
+import { createTaskSchema } from "@/shared/validation/todos"
+import useTodoStore from "@/shared/zustand/todos"
+import TodosTable from "./table"
+import { requestCreateTask, requestGetTasks } from "./request"
 import { TableContainerWrapper } from "./styled"
 
-const TRow: React.FC<TTask> = (row) => {
-	return (
-		<TableRow>
-			<TableCell>{row._id}</TableCell>
-			<TableCell>{row.task}</TableCell>
-			<TableCell>
-				<Button size="small" variant="contained" color="success">
-					Edit
-				</Button>
-				<Button size="small" variant="contained" color="error">
-					Delete
-				</Button>
-			</TableCell>
-		</TableRow>
-	)
-}
-
-const TRowNoData = () => {
-	return (
-		<TableRow>
-			<TableCell align="center" component="th" scope="row" colSpan={3}>
-				No data to display
-			</TableCell>
-		</TableRow>
-	)
-}
 const Todos = () => {
-	const [task, setTask] = useState("")
-
-	const rows: TTask[] = [{ _id: "1", userId: "2", task: "Test" }]
-
-	let elem: React.ReactElement | React.ReactElement[] = <TRowNoData />
-
-	if (rows.length > 0) {
-		elem = rows.map((row, index) => <TRow key={index} {...row} />)
+	const innerRef = useRef(null)
+	const form = { userId: "68a1675933e01288fd8b1c57", task: "" }
+	const { formMode } = useTodoStore()
+	const handleOnError = (error: Error & { [key: string]: string }) => {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const current = innerRef.current as any
+		if (current) {
+			current.setErrors(error.validation)
+		}
+	}
+	const handleOnSubmit = (values: TCreateTask) => {
+		taskMutation.mutate(values)
 	}
 
-	const handleTaskOnchange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setTask(e.target.value)
-	}
-
-	const taskInputProps: TextFieldProps = {
-		size: "small",
-		name: "task",
-		placeholder: "Enter task...",
-		value: task,
-		onChange: handleTaskOnchange,
-	}
+	const taskMutation = requestCreateTask({ onError: handleOnError })
+	const { data, isLoading } = requestGetTasks("68a1675933e01288fd8b1c57")
 
 	return (
 		<TableContainerWrapper>
-			<Box className="searchbar">
-				<TextField {...taskInputProps} />
-				<Button size="small" variant="contained" color="success">
-					Create Task
-				</Button>
-			</Box>
-			<TableContainer>
-				<Table>
-					<TableHead>
-						<TableRow>
-							<TableCell>TASK ID</TableCell>
-							<TableCell>TASK</TableCell>
-							<TableCell>ACTION</TableCell>
-						</TableRow>
-					</TableHead>
-					<TableBody>{elem}</TableBody>
-				</Table>
-			</TableContainer>
+			<Formik
+				innerRef={innerRef}
+				initialValues={form}
+				validationSchema={createTaskSchema}
+				onSubmit={handleOnSubmit}>
+				{({ errors, values, handleChange }) => {
+					const taskInputProps: TextFieldProps = {
+						error: errors.task ? true : false,
+						helperText: errors.task,
+						size: "small",
+						name: "task",
+						placeholder: "Enter task...",
+						value: values.task,
+						onChange: handleChange,
+						disabled: formMode === "EDIT",
+					}
+
+					return (
+						<Form>
+							<Box className="searchbar">
+								<TextField {...taskInputProps} />
+								<Button
+									size="small"
+									variant="contained"
+									color="success"
+									type="submit"
+									disabled={
+										taskMutation.isPending ||
+										values.task === ""
+									}>
+									Create Task
+								</Button>
+							</Box>
+						</Form>
+					)
+				}}
+			</Formik>
+			<TodosTable data={data} loading={isLoading} />
 		</TableContainerWrapper>
 	)
 }

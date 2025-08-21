@@ -1,4 +1,5 @@
 import React, { useRef } from "react"
+import { useRouter } from "next/navigation"
 import { SxProps, Theme } from "@mui/material"
 
 import Grid from "@mui/material/Grid"
@@ -27,6 +28,7 @@ const ContainerSx: SxProps<Theme> = {
 
 const Login = () => {
 	const innerRef = useRef(null)
+	const router = useRouter()
 	const form = { username: "", password: "" }
 
 	const loginMutation = useMutation({
@@ -58,6 +60,9 @@ const Login = () => {
 			if (current) {
 				current.setErrors(error.validation)
 			}
+		},
+		onSuccess: () => {
+			router.push("/dashboard")
 		},
 	})
 

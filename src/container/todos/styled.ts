@@ -15,6 +15,9 @@ export const TableContainerWrapper = styled(TableContainer)`
 		.MuiTableHead-root {
 			.MuiTableRow-root {
 				.MuiTableCell-root {
+					&:nth-of-type(1) {
+						width: 250px;
+					}
 					&:nth-of-type(3) {
 						width: 150px;
 					}
@@ -25,9 +28,14 @@ export const TableContainerWrapper = styled(TableContainer)`
 		.MuiTableBody-root {
 			.MuiTableRow-root {
 				.MuiTableCell-root {
+					&:nth-of-type(1) {
+						width: 250px;
+					}
 					&:nth-of-type(3) {
-						display: flex;
-						column-gap: 10px;
+						.action-wrapper {
+							display: flex;
+							column-gap: 10px;
+						}
 					}
 				}
 			}

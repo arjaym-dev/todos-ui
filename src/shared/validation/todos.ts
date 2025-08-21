@@ -17,7 +17,3 @@ export const editTaskSchema = object({
 	taskId: string().required("TaskID is required"),
 	task: string().required("Task is required"),
 })
-
-export type TCreateTask = InferType<typeof createTaskSchema>
-export type TDeleteTask = InferType<typeof deleteTaskSchema>
-export type TEditTask = InferType<typeof editTaskSchema>
