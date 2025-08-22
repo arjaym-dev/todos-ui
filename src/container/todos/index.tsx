@@ -17,6 +17,7 @@ const Todos = () => {
 	const innerRef = useRef(null)
 	const form = { userId: "68a1675933e01288fd8b1c57", task: "" }
 	const { formMode } = useTodoStore()
+
 	const handleOnError = (error: Error & { [key: string]: string }) => {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const current = innerRef.current as any

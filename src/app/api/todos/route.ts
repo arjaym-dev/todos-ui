@@ -12,10 +12,9 @@ import {
 	createTaskSchema,
 	deleteTaskSchema,
 	editTaskSchema,
-	TEditTask,
-	TCreateTask,
-	TDeleteTask,
 } from "@/shared/validation/todos"
+
+import { TEditTask, TCreateTask, TDeleteTask } from "@/shared/types/todos"
 import { payloadValidationErrors } from "@/shared/handler/payload-validation"
 import { decrypt } from "@/shared/lib/session"
 
@@ -217,7 +216,7 @@ export async function PUT(req: Request) {
 		await editTaskSchema.validate(payload, { abortEarly: false })
 
 		// Validate if the session token, is really the user that creating the task
-		const user = await users.findById(payload.userId)
+		const user = await users.findById(payload._id)
 
 		if (user) {
 			if (user._id.toString() !== sessionDecrypt._id) {
@@ -249,7 +248,7 @@ export async function PUT(req: Request) {
 
 		// Update the task
 		const task = await todos.findByIdAndUpdate(
-			payload.taskId,
+			payload._id,
 			{ task: payload.task },
 			{ lean: true, new: true, select: "_id userId task" },
 		)

@@ -14,6 +14,6 @@ export const deleteTaskSchema = object({
 
 export const editTaskSchema = object({
 	userId: string().required("UserID is required"),
-	taskId: string().required("TaskID is required"),
+	_id: string().required("TaskID is required"),
 	task: string().required("Task is required"),
 })

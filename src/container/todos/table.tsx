@@ -11,25 +11,33 @@ import Box from "@mui/material/Box"
 import Button from "@mui/material/Button"
 import TextField, { TextFieldProps } from "@mui/material/TextField"
 
-import { TEditTask, TTask } from "@/shared/types/todos"
+import { TTask } from "@/shared/types/todos"
 import useTodoStore from "@/shared/zustand/todos"
 
+import { requestEditTask } from "./request"
+
 const TRow: React.FC<TTask> = (row) => {
-	const { formMode, edit, setFormMode, setEditTask } = useTodoStore()
+	const { formMode, edit, initialState, setFormMode, setEditTask } =
+		useTodoStore()
 	const [error, setError] = useState("")
+
+	const onSuccess = () => {
+		setFormMode("")
+		setEditTask(initialState.edit)
+	}
 
 	const handleEdit = () => {
 		setFormMode("EDIT")
-		setEditTask({ userId: row.userId, taskId: row._id, task: row.task })
+		setEditTask(row)
 	}
 
 	const handleCancel = () => {
 		setFormMode("")
-		setEditTask({ userId: "", taskId: "", task: "" })
+		setEditTask(initialState.edit)
 		setError("")
 	}
 
-	const handleSave = () => {}
+	const handleSave = () => editTaskMutation.mutate(edit)
 
 	const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setEditTask({ ...edit, [e.target.name]: e.target.value })
@@ -42,7 +50,7 @@ const TRow: React.FC<TTask> = (row) => {
 	}
 
 	const editInputProps: TextFieldProps = {
-		error: edit.taskId === row._id && error.length > 0,
+		error: edit._id === row._id && error.length > 0,
 		helperText: error,
 		size: "small",
 		name: "task",
@@ -50,7 +58,9 @@ const TRow: React.FC<TTask> = (row) => {
 		onChange: handleOnChange,
 	}
 
-	const isEdit = formMode === "EDIT" && edit.taskId === row._id
+	const isEdit = formMode === "EDIT" && edit._id === row._id
+
+	const editTaskMutation = requestEditTask({ onSuccess: onSuccess })
 
 	return (
 		<TableRow>
