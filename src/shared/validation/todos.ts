@@ -9,7 +9,7 @@ export const createTaskSchema = object({
 
 export const deleteTaskSchema = object({
 	userId: string().required("UserID is required"),
-	taskId: string().required("TaskID is required"),
+	_id: string().required("TaskID is required"),
 })
 
 export const editTaskSchema = object({

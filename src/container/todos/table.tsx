@@ -14,7 +14,7 @@ import TextField, { TextFieldProps } from "@mui/material/TextField"
 import { TTask } from "@/shared/types/todos"
 import useTodoStore from "@/shared/zustand/todos"
 
-import { requestEditTask } from "./request"
+import { requestEditTask, requestDeleteTaskMutation } from "./request"
 
 const TRow: React.FC<TTask> = (row) => {
 	const { formMode, edit, initialState, setFormMode, setEditTask } =
@@ -38,6 +38,8 @@ const TRow: React.FC<TTask> = (row) => {
 	}
 
 	const handleSave = () => editTaskMutation.mutate(edit)
+	const handleDelete = () =>
+		deleteTaskMutation.mutate({ _id: row._id, userId: row.userId })
 
 	const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setEditTask({ ...edit, [e.target.name]: e.target.value })
@@ -61,7 +63,7 @@ const TRow: React.FC<TTask> = (row) => {
 	const isEdit = formMode === "EDIT" && edit._id === row._id
 
 	const editTaskMutation = requestEditTask({ onSuccess: onSuccess })
-
+	const deleteTaskMutation = requestDeleteTaskMutation({})
 	return (
 		<TableRow>
 			<TableCell>{row._id}</TableCell>
@@ -100,7 +102,8 @@ const TRow: React.FC<TTask> = (row) => {
 							<Button
 								size="small"
 								variant="contained"
-								color="error">
+								color="error"
+								onClick={handleDelete}>
 								Delete
 							</Button>
 						</React.Fragment>

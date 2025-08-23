@@ -116,3 +116,44 @@ export const requestCreateTask = <T>(props: RTaskMutation<T>) => {
 		},
 	})
 }
+
+export const requestDeleteTaskMutation = <T>(props: RTaskMutation<T>) => {
+	const queryClient = useQueryClient()
+
+	return useMutation({
+		retry: false,
+		mutationKey: ["delete-task"],
+		mutationFn: async (payload: { _id: string; userId: string }) => {
+			const res = await fetch("/api/todos", {
+				method: "DELETE",
+				body: JSON.stringify(payload),
+				credentials: "same-origin",
+				headers: { "Content-Type": "application/json" },
+			})
+
+			const data = await res.json()
+
+			if (!res.ok) {
+				let error = new Error("Bad request") as Error & {
+					[key: string]: string
+				}
+
+				error.validation = data
+
+				throw error
+			}
+
+			return data
+		},
+		onError: (error: Error & { [key: string]: string }) => {
+			if (props.onError) {
+				props.onError(error)
+			}
+		},
+		onSuccess: (data: T, variables: { _id: string; userId: string }) => {
+			queryClient.setQueryData(["get-tasks"], (prevTasks: TTask[]) => {
+				return prevTasks.filter((task) => task._id != variables._id)
+			})
+		},
+	})
+}

@@ -183,7 +183,7 @@ export async function DELETE(req: Request) {
 		}
 
 		// Delete task
-		await todos.findByIdAndDelete(payload.taskId)
+		await todos.findByIdAndDelete(payload._id)
 
 		return Response.json({}, { status: 202 })
 	} catch (error) {
