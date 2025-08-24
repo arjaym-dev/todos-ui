@@ -15,8 +15,9 @@ import { TableContainerWrapper } from "./styled"
 
 const Todos = () => {
 	const innerRef = useRef(null)
-	const form = { userId: "68a1675933e01288fd8b1c57", task: "" }
-	const { formMode } = useTodoStore()
+	const { formMode, user } = useTodoStore()
+
+	const form = { userId: user._id, task: "" }
 
 	const handleOnError = (error: Error & { [key: string]: string }) => {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -30,7 +31,7 @@ const Todos = () => {
 	}
 
 	const taskMutation = requestCreateTask({ onError: handleOnError })
-	const { data, isLoading } = requestGetTasks("68a1675933e01288fd8b1c57")
+	const { data, isLoading } = requestGetTasks(user._id)
 
 	return (
 		<TableContainerWrapper>

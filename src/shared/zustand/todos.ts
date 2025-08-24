@@ -1,30 +1,46 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from "zustand"
+import { persist } from "zustand/middleware"
+
 import { TEditTask } from "../types/todos"
 
+type TUser = { _id: string; username: string; roleId: string }
 type State = {
 	formMode: "CREATE" | "EDIT" | "DELETE" | ""
 	edit: TEditTask
+
+	user: TUser
 	initialState: {
 		formMode: "CREATE" | "EDIT" | "DELETE" | ""
 		edit: TEditTask
+		user: TUser
 	}
 }
 
 type Action = {
 	setFormMode: (payload: "CREATE" | "EDIT" | "DELETE" | "") => void
 	setEditTask: (payload: TEditTask) => void
+	setUser: (payload: TUser) => void
 }
 
-const useTodoStore = create<State & Action>((set) => ({
-	initialState: {
-		formMode: "CREATE",
-		edit: { userId: "", _id: "", task: "" },
-	},
-	formMode: "CREATE",
-	edit: { userId: "", _id: "", task: "" },
-	setFormMode: (payload) => set(() => ({ formMode: payload })),
-	setEditTask: (payload: TEditTask) => set(() => ({ edit: { ...payload } })),
-}))
+const useTodoStore = create<State & Action>()(
+	persist(
+		(set) => ({
+			initialState: {
+				formMode: "CREATE",
+				edit: { userId: "", _id: "", task: "" },
+				user: { _id: "", username: "", roleId: "" },
+			},
+			formMode: "CREATE",
+			edit: { userId: "", _id: "", task: "" },
+			user: { _id: "", username: "", roleId: "" },
+			setFormMode: (payload) => set(() => ({ formMode: payload })),
+			setEditTask: (payload: TEditTask) =>
+				set(() => ({ edit: { ...payload } })),
+			setUser: (payload: TUser) => set(() => ({ user: payload })),
+		}),
+		{ name: "todos", partialize: (state) => ({ user: state.user }) },
+	),
+)
 
 export default useTodoStore

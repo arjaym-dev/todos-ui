@@ -9,12 +9,14 @@ import ListItemIcon from "@mui/material/ListItemIcon"
 import ListItemText from "@mui/material/ListItemText"
 import DashboardIcon from "@mui/icons-material/Dashboard"
 import AssignmentIcon from "@mui/icons-material/Assignment"
+import FingerprintIcon from "@mui/icons-material/Fingerprint"
 
 type TNavItem = { path: string; name: string }
 
 const navlinks: TNavItem[] = [
 	{ path: "/dashboard", name: "Dashboard" },
 	{ path: "/dashboard/todos", name: "Todos" },
+	{ path: "/dashboard/roles", name: "Roles" },
 ]
 
 const NavItem: React.FC<TNavItem> = (props) => {
@@ -28,6 +30,8 @@ const NavItem: React.FC<TNavItem> = (props) => {
 
 	if (props.name === "Todos") {
 		icon = <AssignmentIcon />
+	} else if (props.name === "Roles") {
+		icon = <FingerprintIcon />
 	}
 
 	return (

@@ -10,7 +10,7 @@ import { Formik, Form } from "formik"
 import { useMutation } from "@tanstack/react-query"
 
 import { TLoginUser, loginUserSchema } from "@/shared/validation/users"
-
+import useTodoStore from "@/shared/zustand/todos"
 const ContainerSx: SxProps<Theme> = {
 	"&": {
 		justifyContent: "center",
@@ -31,6 +31,7 @@ const Login = () => {
 	const router = useRouter()
 	const form = { username: "", password: "" }
 
+	const { setUser } = useTodoStore()
 	const loginMutation = useMutation({
 		retry: false,
 		mutationKey: ["todos"],
@@ -61,7 +62,8 @@ const Login = () => {
 				current.setErrors(error.validation)
 			}
 		},
-		onSuccess: () => {
+		onSuccess: (data) => {
+			setUser(data)
 			router.push("/dashboard")
 		},
 	})
