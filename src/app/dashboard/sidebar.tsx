@@ -1,7 +1,8 @@
 "use client"
 
+import React from "react"
 import { useRouter } from "next/navigation"
-
+import { useMutation } from "@tanstack/react-query"
 import List from "@mui/material/List"
 import ListItemButton from "@mui/material/ListItemButton"
 import ListItemIcon from "@mui/material/ListItemIcon"
@@ -38,12 +39,38 @@ const NavItem: React.FC<TNavItem> = (props) => {
 }
 
 const Sidebar = () => {
+	const router = useRouter()
+	const logoutMutation = useMutation({
+		retry: false,
+		mutationKey: ["logout"],
+		mutationFn: async () => {
+			await fetch("/api/logout", {
+				method: "DELETE",
+				credentials: "same-origin",
+				headers: { "Content-Type": "application/json" },
+			})
+		},
+		onSuccess: () => {
+			router.push("/")
+		},
+	})
+
+	const handleLogout = () => {
+		logoutMutation.mutate()
+	}
+
 	return (
-		<List component={"nav"}>
-			{navlinks.map((nav, index) => (
-				<NavItem key={index} {...nav} />
-			))}
-		</List>
+		<React.Fragment>
+			<List component={"nav"}>
+				{navlinks.map((nav, index) => (
+					<NavItem key={index} {...nav} />
+				))}
+			</List>
+			<ListItemButton onClick={handleLogout}>
+				<ListItemIcon></ListItemIcon>
+				<ListItemText>Logout</ListItemText>
+			</ListItemButton>
+		</React.Fragment>
 	)
 }
 
