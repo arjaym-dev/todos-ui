@@ -1,4 +1,5 @@
-import React, { useState, useRef } from "react"
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useState, useRef, useEffect } from "react"
 
 import Button from "@mui/material/Button"
 import Box from "@mui/material/Box"
@@ -31,7 +32,7 @@ const Todos = () => {
 	}
 
 	const taskMutation = requestCreateTask({ onError: handleOnError })
-	const { data, isLoading } = requestGetTasks(user._id)
+	const { data = [], isPending } = requestGetTasks(user._id)
 
 	return (
 		<TableContainerWrapper>
@@ -72,7 +73,7 @@ const Todos = () => {
 					)
 				}}
 			</Formik>
-			<TodosTable data={data} loading={isLoading} />
+			<TodosTable data={data} loading={isPending} />
 		</TableContainerWrapper>
 	)
 }
