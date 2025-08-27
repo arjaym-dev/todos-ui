@@ -1,5 +1,10 @@
+"use client"
+
+import dynamic from "next/dynamic"
+
+const Roles = dynamic(() => import("@/container/roles"), { ssr: false })
 const Page = () => {
-	return <h1>This is roles page</h1>
+	return <Roles />
 }
 
 export default Page
