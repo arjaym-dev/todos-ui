@@ -15,7 +15,7 @@ export async function GET(req: Request) {
 		await dbConnect()
 
 		// Get roles
-		const rolesCollection = await roles.findById(roleId).lean(true)
+		const rolesCollection = await roles.find().lean(true)
 
 		// Get permissions
 		const permissionsCollection = await permissions.find({}, {}).lean(true)
