@@ -25,7 +25,10 @@ const RenderCheckBox = (props: GridRenderCellParams) => {
 	const checkBoxProps: CheckboxProps = {
 		size: "small",
 		checked: value,
-		onChange: () => {},
+		onChange: () => {
+			console.log(rowPermissionsFieldName)
+			console.log(props.value)
+		},
 	}
 	return <CheckBox {...checkBoxProps} />
 }
