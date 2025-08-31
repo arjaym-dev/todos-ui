@@ -64,7 +64,8 @@ const Todos = () => {
 									type="submit"
 									disabled={
 										taskMutation.isPending ||
-										values.task === ""
+										values.task === "" ||
+										formMode === "EDIT"
 									}>
 									Create Task
 								</Button>
