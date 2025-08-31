@@ -64,12 +64,14 @@ export const requestGetRoles = (roleId: string) => {
 
 			const data = await response.json()
 
-			const formattedRows = formatRows(data)
+			const formattedRows = [...formatRows(data)]
+			const duplicateRows = [...formatRows(data)]
 
 			return {
 				rows: formattedRows,
 				roles: data.roles,
 				permissions: data.permissions,
+				duplicateRows: duplicateRows,
 			}
 		},
 	})

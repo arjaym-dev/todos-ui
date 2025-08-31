@@ -57,7 +57,7 @@ const RenderCheckBox = (props: GridRenderCellParams) => {
 			}
 
 			for (let i = 0; i < rowIds.length; i++) {
-				const row = apiRef.current.getRow(rowIds[i])
+				const row = { ...apiRef.current.getRow(rowIds[i]) }
 
 				row[rowPermissionsFieldName] = dupPermissions
 
@@ -106,9 +106,14 @@ const Roles = () => {
 
 	if (error && error.statusCode === 401) return <Box>401</Box>
 
-	const { rows = [], roles = [] } = getRolesQuery.data as {
+	const {
+		rows = [],
+		roles = [],
+		duplicateRows = [],
+	} = getRolesQuery.data as {
 		rows: TRolesRow[]
 		roles: TRole[]
+		duplicateRows: TRolesRow[]
 	}
 
 	const handleSave = () => {
@@ -124,6 +129,10 @@ const Roles = () => {
 
 			editRolesMutation.mutate(updatedRoles)
 		}
+	}
+
+	const handleCancel = () => {
+		if (apiRef.current) apiRef.current.setRows(duplicateRows)
 	}
 
 	const dataGridProps: DataGridProps = {
@@ -144,6 +153,7 @@ const Roles = () => {
 			size: "small",
 			variant: "outlined",
 			color: "primary",
+			onClick: handleCancel,
 		},
 		buttonSaveProps: ButtonProps = {
 			size: "small",
