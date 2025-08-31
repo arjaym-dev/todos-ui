@@ -1,9 +1,11 @@
 import { NextRequest as Request, NextResponse as Response } from "next/server"
 import { ValidationError } from "yup"
 import { MongooseError } from "mongoose"
+import { JWTPayload } from "jose"
 
 import dbConnect from "@/shared/lib/db-connect"
 import { payloadValidationErrors } from "@/shared/handler/payload-validation"
+import { decrypt } from "@/shared/lib/session"
 
 import permissions from "@/app/models/permissions"
 import roles from "@/app/models/roles"
@@ -45,6 +47,27 @@ export async function GET(req: Request) {
 export async function PUT(req: Request) {
 	try {
 		await dbConnect()
+		const session = req.cookies.get("session")?.value
+		const sessionDecrypt = (await decrypt(session)) as JWTPayload
+
+		// Validate if the user, has permission if not throw error
+		const role = await roles.findById(sessionDecrypt.roleId)
+		if (role) {
+			const permissions = role.permissions
+
+			if (
+				permissions.includes("API_TODOS_ROLES_EDIT") === false ||
+				role.roleId !== "ADMIN"
+			) {
+				return Response.json(
+					{
+						message:
+							"User does not have permission for this action",
+					},
+					{ status: 401 },
+				)
+			}
+		}
 
 		const payload: { roles: TRole[] } = await req.json()
 		const newRoles: TRole[] = []

@@ -1,4 +1,5 @@
-import { useQuery, useMutation } from "@tanstack/react-query"
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { TPermission, TRole, TRolesRow } from "@/shared/types/roles"
 
@@ -48,15 +49,57 @@ export const requestGetRoles = (roleId: string) => {
 		refetchOnWindowFocus: false,
 		queryKey: ["get-roles"],
 		queryFn: async () => {
-			const response = await fetch(
-				`http://localhost:3000/api/roles?roleId=${roleId}`,
-			)
+			const response = await fetch(`/api/roles?roleId=${roleId}`)
+
+			if (response.status === 401) {
+				let error = new Error("Bad request") as Error & {
+					[key: string]: string | number
+				}
+
+				error.validation = await response.json()
+				error.statusCode = response.status
+
+				throw error
+			}
 
 			const data = await response.json()
 
-			const formattedData = formatRows(data)
+			const formattedRows = formatRows(data)
 
-			return formattedData
+			return {
+				rows: formattedRows,
+				roles: data.roles,
+				permissions: data.permissions,
+			}
+		},
+	})
+}
+
+export const requestEditRoles = () => {
+	const queryClient = useQueryClient()
+	return useMutation({
+		mutationKey: ["edit-roles"],
+		mutationFn: async (payload: TRole[]) => {
+			const response = await fetch("/api/roles", {
+				method: "PUT",
+				body: JSON.stringify({ roles: payload }),
+			})
+
+			if (response.ok) {
+				return await response.json()
+			} else {
+				return []
+			}
+		},
+		onSuccess: (data, variables) => {
+			queryClient.setQueryData(["get-roles"], (prevRoles: any) => {
+				const formattedRows = formatRows({
+					roles: variables,
+					permissions: prevRoles.permissions,
+				})
+
+				return { ...prevRoles, rows: formattedRows, roles: variables }
+			})
 		},
 	})
 }
