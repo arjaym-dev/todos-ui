@@ -18,7 +18,6 @@ export async function POST(req: Request) {
 		await loginUserSchema.validate(payload, { abortEarly: false })
 
 		// Check if user exist
-		console.log("users:", await users.find())
 		const user = await users.findOne({ username: payload.username })
 
 		if (user === null)
