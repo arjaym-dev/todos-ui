@@ -1,11 +1,11 @@
 import { useMutation } from "@tanstack/react-query"
 
 import { TLoginUser } from "@/shared/validation/users"
-import { TProfile } from "@/shared/types/profile"
+import { TUser } from "@/shared/types/user"
 
 export type TRequestLogin = {
 	onError?: (error: Error & { [key: string]: string }) => void
-	onSuccess?: (data: TProfile) => void
+	onSuccess?: (data: TUser) => void
 }
 
 export const requestLogin = (props: TRequestLogin) => {

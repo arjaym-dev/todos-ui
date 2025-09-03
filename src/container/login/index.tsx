@@ -14,7 +14,7 @@ import { TLoginUser, loginUserSchema } from "@/shared/validation/users"
 import useTodoStore from "@/shared/zustand/todos"
 
 import { requestLogin } from "./request"
-import { TProfile } from "@/shared/types/profile"
+import { TUser } from "@/shared/types/user"
 const ContainerSx: SxProps<Theme> = {
 	"&": {
 		justifyContent: "center",
@@ -42,7 +42,7 @@ const Login = () => {
 		}
 	}
 
-	const handleOnSuccess = (data: TProfile) => {
+	const handleOnSuccess = (data: TUser) => {
 		// setUser(data)
 		router.push("/dashboard")
 	}

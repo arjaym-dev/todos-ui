@@ -3,8 +3,8 @@ import { create } from "zustand"
 import { persist } from "zustand/middleware"
 
 import { TEditTask } from "../types/todos"
+import { TUser } from "../types/user"
 
-type TUser = { _id: string; username: string; roleId: string }
 type State = {
 	formMode: "CREATE" | "EDIT" | "DELETE" | ""
 	edit: TEditTask
