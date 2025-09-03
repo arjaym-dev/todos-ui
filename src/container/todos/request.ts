@@ -14,6 +14,7 @@ export const requestGetTasks = (userId: string) => {
 		retry: false,
 		refetchOnWindowFocus: false,
 		queryKey: ["get-tasks"],
+		staleTime: "static",
 		queryFn: async () => {
 			const res = await fetch(`/api/todos?userId=${userId}`)
 
@@ -51,13 +52,10 @@ export const requestEditTask = <T>(props: RTaskMutation<T>) => {
 			return data
 		},
 		onError: (error: Error & { [key: string]: string }) => {
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-
 			if (props.onError) {
 				props.onError(error)
 			}
 		},
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		onSuccess: (data: T, variables: TTask) => {
 			queryClient.setQueryData(["get-tasks"], (prevTasks: TTask[]) => {
 				return prevTasks.map((task: TTask) => {
@@ -103,8 +101,6 @@ export const requestCreateTask = <T>(props: RTaskMutation<T>) => {
 			return data
 		},
 		onError: (error: Error & { [key: string]: string }) => {
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-
 			if (props.onError) {
 				props.onError(error)
 			}

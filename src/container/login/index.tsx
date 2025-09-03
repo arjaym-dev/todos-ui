@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useRef } from "react"
 import { useRouter } from "next/navigation"
 import { SxProps, Theme } from "@mui/material"
@@ -11,6 +12,9 @@ import { useMutation } from "@tanstack/react-query"
 
 import { TLoginUser, loginUserSchema } from "@/shared/validation/users"
 import useTodoStore from "@/shared/zustand/todos"
+
+import { requestLogin } from "./request"
+import { TProfile } from "@/shared/types/profile"
 const ContainerSx: SxProps<Theme> = {
 	"&": {
 		justifyContent: "center",
@@ -29,48 +33,26 @@ const ContainerSx: SxProps<Theme> = {
 const Login = () => {
 	const innerRef = useRef(null)
 	const router = useRouter()
-	const form = { username: "", password: "" }
-
 	const { setUser } = useTodoStore()
-	const loginMutation = useMutation({
-		retry: false,
-		mutationKey: ["todos"],
-		mutationFn: async (payload: TLoginUser) => {
-			const res = await fetch("/api/login", {
-				method: "POST",
-				body: JSON.stringify(payload),
-			})
 
-			const data = await res.json()
+	const handleOnError = (error: Error & { [key: string]: string }) => {
+		const current = innerRef.current as any
+		if (current) {
+			current.setErrors(error.validation)
+		}
+	}
 
-			if (!res.ok) {
-				let error = new Error("Bad request") as Error & {
-					[key: string]: string
-				}
-
-				error.validation = data
-
-				throw error
-			}
-
-			return data
-		},
-		onError: (error: Error & { [key: string]: string }) => {
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const current = innerRef.current as any
-			if (current) {
-				current.setErrors(error.validation)
-			}
-		},
-		onSuccess: (data) => {
-			setUser(data)
-			router.push("/dashboard")
-		},
-	})
+	const handleOnSuccess = (data: TProfile) => {
+		// setUser(data)
+		router.push("/dashboard")
+	}
 
 	const handleOnSubmit = (values: TLoginUser) => {
 		loginMutation.mutate(values)
 	}
+
+	const loginMutation = requestLogin({ onError: handleOnError })
+	const form = { username: "", password: "" }
 
 	return (
 		<Grid sx={ContainerSx} container size={12}>

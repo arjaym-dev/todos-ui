@@ -2,6 +2,7 @@
 
 import React from "react"
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query"
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 
 import Box from "@mui/material/Box"
 
@@ -23,6 +24,8 @@ export default function ContentLayout({
 				</Box>
 				<Box className="content">{children}</Box>
 			</DashboardWrapper>
+
+			<ReactQueryDevtools initialIsOpen={false} />
 		</QueryClientProvider>
 	)
 }
