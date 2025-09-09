@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query"
 
 import {
@@ -8,6 +7,8 @@ import {
 	TTask,
 } from "@/shared/types/todos"
 
+import { Variables } from "@/shared/constant/variables"
+
 export const requestGetTasks = (userId: string) => {
 	return useQuery({
 		enabled: true,
@@ -16,7 +17,14 @@ export const requestGetTasks = (userId: string) => {
 		queryKey: ["get-tasks"],
 		staleTime: "static",
 		queryFn: async () => {
-			const res = await fetch(`/api/todos?userId=${userId}`)
+			const res = await fetch(
+				`${Variables.baseQuery}/todos?userId=${userId}`,
+				{
+					method: "GET",
+					headers: { "Content-Type": "application/json" },
+					// credentials: "include",
+				},
+			)
 
 			return await res.json()
 		},
@@ -30,7 +38,7 @@ export const requestEditTask = <T>(props: RTaskMutation<T>) => {
 		retry: false,
 		mutationKey: ["edit-task"],
 		mutationFn: async (payload: TEditTask) => {
-			const res = await fetch("/api/todos", {
+			const res = await fetch(Variables.baseQuery + "/todos", {
 				method: "PUT",
 				body: JSON.stringify(payload),
 				credentials: "same-origin",
@@ -79,7 +87,7 @@ export const requestCreateTask = <T>(props: RTaskMutation<T>) => {
 		retry: false,
 		mutationKey: ["create-task"],
 		mutationFn: async (payload: TCreateTask) => {
-			const res = await fetch("/api/todos", {
+			const res = await fetch(Variables.baseQuery + "/todos", {
 				method: "POST",
 				body: JSON.stringify(payload),
 				credentials: "same-origin",
@@ -120,7 +128,7 @@ export const requestDeleteTaskMutation = <T>(props: RTaskMutation<T>) => {
 		retry: false,
 		mutationKey: ["delete-task"],
 		mutationFn: async (payload: { _id: string; userId: string }) => {
-			const res = await fetch("/api/todos", {
+			const res = await fetch(Variables.baseQuery + "/todos", {
 				method: "DELETE",
 				body: JSON.stringify(payload),
 				credentials: "same-origin",
