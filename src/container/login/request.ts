@@ -13,7 +13,7 @@ export const requestLogin = (props: TRequestLogin) => {
 		retry: false,
 		mutationKey: ["todos"],
 		mutationFn: async (payload: TLoginUser) => {
-			const res = await fetch("/api/login", {
+			const res = await fetch("http://localhost:3001/api/login", {
 				method: "POST",
 				body: JSON.stringify(payload),
 			})
