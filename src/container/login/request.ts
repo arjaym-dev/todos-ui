@@ -3,6 +3,7 @@ import { useMutation } from "@tanstack/react-query"
 import { TLoginUser } from "@/shared/validation/users"
 import { TUser } from "@/shared/types/user"
 
+import { Variables } from "@/shared/constant/variables"
 export type TRequestLogin = {
 	onError?: (error: Error & { [key: string]: string }) => void
 	onSuccess?: (data: TUser) => void
@@ -13,7 +14,7 @@ export const requestLogin = (props: TRequestLogin) => {
 		retry: false,
 		mutationKey: ["todos"],
 		mutationFn: async (payload: TLoginUser) => {
-			const res = await fetch("http://localhost:3001/api/login", {
+			const res = await fetch(Variables.baseQuery + "/login", {
 				method: "POST",
 				body: JSON.stringify(payload),
 			})
@@ -36,6 +37,8 @@ export const requestLogin = (props: TRequestLogin) => {
 			if (props.onError) {
 				props.onError(error)
 			}
+
+			console.log(error)
 		},
 		onSuccess: (data) => {
 			if (props.onSuccess) {

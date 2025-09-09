@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useRef, useEffect } from "react"
+import React, { useRef } from "react"
 
 import Button from "@mui/material/Button"
 import Box from "@mui/material/Box"
@@ -43,8 +43,8 @@ const Todos = () => {
 				onSubmit={handleOnSubmit}>
 				{({ errors, values, handleChange }) => {
 					const taskInputProps: TextFieldProps = {
-						error: errors.task ? true : false,
-						helperText: errors.task,
+						error: errors && errors.task ? true : false,
+						helperText: errors && errors.task,
 						size: "small",
 						name: "task",
 						placeholder: "Enter task...",

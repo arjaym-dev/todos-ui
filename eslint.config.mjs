@@ -15,7 +15,11 @@ const eslintConfig = [
 			"next/typescript",
 			"prettier",
 		],
-		rules: { "prefer-const": "off", "react-hooks/rules-of-hooks": "off" },
+		rules: {
+			"prefer-const": "off",
+			"react-hooks/rules-of-hooks": "off",
+			"react-hooks/exhaustive-deps": "off",
+		},
 	}),
 ]
 

@@ -8,7 +8,6 @@ import Box from "@mui/material/Box"
 import TextField, { TextFieldProps } from "@mui/material/TextField"
 import Button, { ButtonProps } from "@mui/material/Button"
 import { Formik, Form } from "formik"
-import { useMutation } from "@tanstack/react-query"
 
 import { TLoginUser, loginUserSchema } from "@/shared/validation/users"
 import useTodoStore from "@/shared/zustand/todos"
@@ -43,7 +42,7 @@ const Login = () => {
 	}
 
 	const handleOnSuccess = (data: TUser) => {
-		// setUser(data)
+		setUser(data)
 		router.push("/dashboard")
 	}
 
@@ -51,7 +50,11 @@ const Login = () => {
 		loginMutation.mutate(values)
 	}
 
-	const loginMutation = requestLogin({ onError: handleOnError })
+	const loginMutation = requestLogin({
+		onError: handleOnError,
+		onSuccess: handleOnSuccess,
+	})
+
 	const form = { username: "", password: "" }
 
 	return (
@@ -64,8 +67,8 @@ const Login = () => {
 					onSubmit={handleOnSubmit}>
 					{({ errors, values, handleChange }) => {
 						const usernameProps: TextFieldProps = {
-							error: errors.username ? true : false,
-							helperText: errors.username,
+							error: errors && errors.username ? true : false,
+							helperText: errors && errors.username,
 							name: "username",
 							id: "username",
 							placeholder: "Username",
@@ -76,8 +79,8 @@ const Login = () => {
 						}
 
 						const passwordProps: TextFieldProps = {
-							error: errors.password ? true : false,
-							helperText: errors.password,
+							error: errors && errors.password ? true : false,
+							helperText: errors && errors.password,
 							name: "password",
 							id: "password",
 							placeholder: "Password",

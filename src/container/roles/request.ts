@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { TPermission, TRole, TRolesRow } from "@/shared/types/roles"
 
+import { Variables } from "@/shared/constant/variables"
 const formatRows = (data: {
 	permissions: TPermission[]
 	roles: TRole[]
@@ -49,7 +50,9 @@ export const requestGetRoles = (roleId: string) => {
 		refetchOnWindowFocus: false,
 		queryKey: ["get-roles"],
 		queryFn: async () => {
-			const response = await fetch(`/api/roles?roleId=${roleId}`)
+			const response = await fetch(
+				`${Variables.baseQuery}/roles?roleId=${roleId}`,
+			)
 
 			if (response.status === 401) {
 				let error = new Error("Bad request") as Error & {
@@ -82,7 +85,7 @@ export const requestEditRoles = () => {
 	return useMutation({
 		mutationKey: ["edit-roles"],
 		mutationFn: async (payload: TRole[]) => {
-			const response = await fetch("/api/roles", {
+			const response = await fetch(Variables.baseQuery + "/roles", {
 				method: "PUT",
 				body: JSON.stringify({ roles: payload }),
 			})
