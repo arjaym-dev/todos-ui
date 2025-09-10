@@ -1,11 +1,10 @@
 ARG NODE_VERSION=22.18.0
 
+# Build Stage
 # Use node image for base image for all stages.
-FROM node:${NODE_VERSION}-alpine
 
-ENV HOST=0.0.0.0
+FROM node:${NODE_VERSION}-alpine AS builder 
 
-# Set working directory for all build stages.
 WORKDIR /app
 
 COPY package*.json ./
@@ -14,6 +13,23 @@ RUN npm install
 
 COPY . .
 
+RUN npm run build
+
+# Create image build for production
+
+FROM node:${NODE_VERSION}-alpine
+
+ENV HOST=0.0.0.0
+
+WORKDIR /build/todos-ui
+
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/node_modules ./node_modules/
+COPY --from=builder /app/public ./public/
+COPY --from=builder /app/.next ./.next/
+
+
+
 EXPOSE 3000
 
-CMD [ "npm", "run", "dev" ]
+CMD [ "npx","next","start" ]
