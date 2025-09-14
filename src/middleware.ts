@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextRequest as Request, NextResponse as Response } from "next/server"
 
 export async function middleware(req: Request) {

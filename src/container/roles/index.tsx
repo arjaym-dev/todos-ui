@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react"
 import Box from "@mui/material/Box"
 import CheckBox, { CheckboxProps } from "@mui/material/Checkbox"
@@ -6,7 +5,6 @@ import Button, { ButtonProps } from "@mui/material/Button"
 
 import {
 	DataGrid,
-	GridRowsProp,
 	GridRenderCellParams,
 	DataGridProps,
 	GridColDef,

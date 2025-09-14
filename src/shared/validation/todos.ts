@@ -1,6 +1,4 @@
-/* eslint-disable prefer-const */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { object, string, number, date, InferType } from "yup"
+import { object, string } from "yup"
 
 export const createTaskSchema = object({
 	userId: string().required("UserID is required"),

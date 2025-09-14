@@ -21,7 +21,6 @@ const navlinks: TNavItem[] = [
 
 const NavItem: React.FC<TNavItem> = (props) => {
 	const router = useRouter()
-	// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 	let icon: React.ReactElement = <DashboardIcon />
 
 	const handleNavigate = () => {
