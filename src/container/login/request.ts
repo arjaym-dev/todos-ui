@@ -10,7 +10,6 @@ export type TRequestLogin = {
 }
 
 export const requestLogin = (props: TRequestLogin) => {
-	console.log(Variables.baseQuery + "/login")
 	return useMutation({
 		retry: false,
 		mutationKey: ["todos"],
