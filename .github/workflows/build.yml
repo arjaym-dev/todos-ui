@@ -46,6 +46,6 @@ jobs:
                       sudo docker run -d \
                       --name todos-ui \
                       -p 3000:3000 \
-                      -e ${{vars.REQUEST_BASE_QUERY_DEV}} \
-                      -e ${{vars.REQUEST_BASE_QUERY_PROD}} \
+                      -e ${{vars.NEXT_PUBLIC_REQUEST_BASE_QUERY_DEV}} \
+                      -e ${{vars.NEXT_PUBLIC_REQUEST_BASE_QUERY_PROD}} \
                       arjaym/todos-ui:latest

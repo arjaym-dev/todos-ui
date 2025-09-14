@@ -59,8 +59,11 @@ const Login = () => {
 
 	const form = { username: "", password: "" }
 
+	console.log("test")
 	console.log("variables:", Variables)
 
+	console.log(process.env.NEXT_PUBLIC_REQUEST_BASE_QUERY_DEV)
+	console.log(process.env.NEXT_PUBLIC_REQUEST_BASE_QUERY_PROD)
 	return (
 		<Grid sx={ContainerSx} container size={12}>
 			<Grid size={{ xs: 12, sm: 6, md: 3 }}>
