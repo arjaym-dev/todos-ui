@@ -46,6 +46,6 @@ jobs:
                       sudo docker run -d \
                       --name todos-ui \
                       -p 3000:3000 \
-                      -e ${{vars.NEXT_PUBLIC_REQUEST_BASE_QUERY_DEV}} \
-                      -e ${{vars.NEXT_PUBLIC_REQUEST_BASE_QUERY_PROD}} \
+                      -e NEXT_PUBLIC_REQUEST_BASE_QUERY_DEV=http://localhost:3000/api \
+                      -e NEXT_PUBLIC_REQUEST_BASE_QUERY_PROD=http://18.139.160.95/api  \
                       arjaym/todos-ui:latest
