@@ -1,6 +1,4 @@
-/* eslint-disable prefer-const */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { object, string, number, date, InferType } from "yup"
+import { object, string, InferType } from "yup"
 
 export const createUserSchema = object({
 	username: string().required("Username is required"),

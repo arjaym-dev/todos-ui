@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useRef } from "react"
 import { useRouter } from "next/navigation"
 import { SxProps, Theme } from "@mui/material"
@@ -14,6 +13,7 @@ import useTodoStore from "@/shared/zustand/todos"
 
 import { requestLogin } from "./request"
 import { TUser } from "@/shared/types/user"
+
 const ContainerSx: SxProps<Theme> = {
 	"&": {
 		justifyContent: "center",
@@ -57,7 +57,6 @@ const Login = () => {
 
 	const form = { username: "", password: "" }
 
-	console.log()
 	return (
 		<Grid sx={ContainerSx} container size={12}>
 			<Grid size={{ xs: 12, sm: 6, md: 3 }}>

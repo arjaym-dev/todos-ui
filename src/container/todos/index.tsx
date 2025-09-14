@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useRef } from "react"
 
 import Button from "@mui/material/Button"
@@ -21,7 +20,6 @@ const Todos = () => {
 	const form = { userId: user._id, task: "" }
 
 	const handleOnError = (error: Error & { [key: string]: string }) => {
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const current = innerRef.current as any
 		if (current) {
 			current.setErrors(error.validation)
