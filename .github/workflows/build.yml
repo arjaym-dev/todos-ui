@@ -36,6 +36,8 @@ jobs:
                   username: ${{ secrets.EC2_USERNAME }}
                   key: ${{ secrets.EC2_PRIVATE_KEY }}
                   script: |
+                      # Do docker prune to clear up some space
+                      sudo docker system prune
                       # Pull the latest Docker image
                       sudo docker pull arjaym/todos-ui:latest
                       # Stop any existing container
