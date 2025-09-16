@@ -9,7 +9,7 @@ const nextConfig: NextConfig = {
 				destination:
 					process.env.NODE_ENV === "development"
 						? "http://localhost:5000/api/:path*"
-						: "3.0.97.40/api/:path*",
+						: "http://3.0.97.40/api/:path*",
 			},
 		]
 	},
