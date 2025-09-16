@@ -1,0 +1,10 @@
+services:
+    todos-ui:
+        container_name: todos-ui
+        image: todos-ui
+        env_file:
+            - ./.env.prod
+        build:
+            context: .
+        ports:
+            - "3000:3000"
