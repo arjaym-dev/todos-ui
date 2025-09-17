@@ -1,9 +1,9 @@
 services:
     todos-ui:
         container_name: todos-ui.dev
-        image: todos-ui.dev
+        image: todos-ui
         env_file:
-            - ./.env.dev
+            - .env.development
         build:
             context: .
             target: builder # This is the key change: it tells Docker to only build and use the `builder` stage

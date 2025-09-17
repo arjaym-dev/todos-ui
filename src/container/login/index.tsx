@@ -13,7 +13,6 @@ import useTodoStore from "@/shared/zustand/todos"
 
 import { requestLogin } from "./request"
 import { TUser } from "@/shared/types/user"
-import { Variables } from "@/shared/constant/variables"
 
 const ContainerSx: SxProps<Theme> = {
 	"&": {
