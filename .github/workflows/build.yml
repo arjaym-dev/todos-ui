@@ -46,6 +46,7 @@ jobs:
                       sudo docker rm todos-ui
                       # Run a new container with the updated image
                       sudo docker run -d \
+                      --env-file .env.production \
                       --name todos-ui \
                       -p 3000:3000 \
                       arjaym/todos-ui:latest
