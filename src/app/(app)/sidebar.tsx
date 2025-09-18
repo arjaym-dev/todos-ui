@@ -15,8 +15,8 @@ type TNavItem = { path: string; name: string }
 
 const navlinks: TNavItem[] = [
 	{ path: "/dashboard", name: "Dashboard" },
-	{ path: "/dashboard/todos", name: "Todos" },
-	{ path: "/dashboard/roles", name: "Roles" },
+	{ path: "/todos", name: "Todos" },
+	{ path: "/roles", name: "Roles" },
 ]
 
 const NavItem: React.FC<TNavItem> = (props) => {
