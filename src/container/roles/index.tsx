@@ -93,22 +93,20 @@ const columns: GridColDef[] = [
 const Roles = () => {
 	const apiRef = useGridApiRef()
 	const { user } = useTodoStore()
-	const getRolesQuery = requestGetRoles(user.roleId)
+	const { error, isLoading, data = {} } = requestGetRoles(user.roleId)
 	const editRolesMutation = requestEditRoles()
 
-	const error = getRolesQuery.error as unknown as Error & {
-		[key: string]: any
-	}
+	const er = error as unknown as Error & { [key: string]: any }
 
-	if (getRolesQuery.isLoading) return null
+	if (isLoading) return null
 
-	if (error && error.statusCode === 401) return <Box>401</Box>
+	if (er && er.statusCode === 401) return <Box>401</Box>
 
 	const {
 		rows = [],
 		roles = [],
 		duplicateRows = [],
-	} = getRolesQuery.data as {
+	} = data as {
 		rows: TRolesRow[]
 		roles: TRole[]
 		duplicateRows: TRolesRow[]

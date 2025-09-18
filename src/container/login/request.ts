@@ -17,6 +17,7 @@ export const requestLogin = (props: TRequestLogin) => {
 			const res = await fetch(Variables.baseQuery + "/login", {
 				method: "POST",
 				body: JSON.stringify(payload),
+				credentials: "same-origin",
 			})
 
 			const data = await res.json()
@@ -37,8 +38,6 @@ export const requestLogin = (props: TRequestLogin) => {
 			if (props.onError) {
 				props.onError(error)
 			}
-
-			console.log(error)
 		},
 		onSuccess: (data) => {
 			if (props.onSuccess) {
