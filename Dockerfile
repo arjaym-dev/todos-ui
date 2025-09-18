@@ -1,7 +1,11 @@
 ARG NODE_VERSION=22.18.0
+ARG BASE_URL_QUERY=http://3.0.97.40/api
 
 # Use node image for base image for all stages.
 FROM node:${NODE_VERSION}-alpine AS builder 
+
+ENV NEXT_PUBLIC_REQUEST_BASE_QUERY=${BASE_URL_QUERY}
+ENV NEXT_PUBLIC_REVERSE_PROXY_URL="${BASE_URL_QUERY}/:path*"
 
 WORKDIR /app
 
