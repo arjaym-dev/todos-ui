@@ -2,10 +2,13 @@ import { useMutation } from "@tanstack/react-query"
 
 import { TLoginUser } from "@/shared/validation/users"
 import { TUser } from "@/shared/types/user"
+import { TStringIndex } from "@/shared/types/misc"
 
-import { Variables } from "@/shared/constant/variables"
+import request from "@/shared/constant/request"
+import { AxiosError } from "axios"
+
 export type TRequestLogin = {
-	onError?: (error: Error & { [key: string]: string }) => void
+	onError?: (error: TStringIndex) => void
 	onSuccess?: (data: TUser) => void
 }
 
@@ -14,15 +17,10 @@ export const requestLogin = (props: TRequestLogin) => {
 		retry: false,
 		mutationKey: ["todos"],
 		mutationFn: async (payload: TLoginUser) => {
-			const res = await fetch(Variables.baseQuery + "/login", {
-				method: "POST",
-				body: JSON.stringify(payload),
-				credentials: "same-origin",
-			})
+			const res = await request.post("/login", payload)
+			const data = res.data
 
-			const data = await res.json()
-
-			if (!res.ok) {
+			if (res.statusText != "OK") {
 				let error = new Error("Bad request") as Error & {
 					[key: string]: string
 				}
@@ -34,9 +32,12 @@ export const requestLogin = (props: TRequestLogin) => {
 
 			return data
 		},
-		onError: (error: Error & { [key: string]: string }) => {
-			if (props.onError) {
-				props.onError(error)
+		onError: (error: Error) => {
+			if (error.name == "AxiosError") {
+				let err = error as AxiosError
+				if (props.onError) {
+					props.onError(err.response?.data as TStringIndex)
+				}
 			}
 		},
 		onSuccess: (data) => {
