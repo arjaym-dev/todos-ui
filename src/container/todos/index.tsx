@@ -1,17 +1,20 @@
 import React, { useRef } from "react"
-
+import { AxiosError } from "axios"
 import Button from "@mui/material/Button"
 import Box from "@mui/material/Box"
 import TextField, { TextFieldProps } from "@mui/material/TextField"
 
 import { Formik, Form } from "formik"
 
+import useTodoStore from "@/shared/zustand/todos"
+
 import { TCreateTask } from "@/shared/types/todos"
 import { createTaskSchema } from "@/shared/validation/todos"
-import useTodoStore from "@/shared/zustand/todos"
+
 import TodosTable from "./table"
 import { requestCreateTask, requestGetTasks } from "./request"
 import { TableContainerWrapper } from "./styled"
+import { TStringIndex } from "@/shared/types/misc"
 
 const Todos = () => {
 	const innerRef = useRef(null)
@@ -19,7 +22,7 @@ const Todos = () => {
 
 	const form = { userId: user._id, task: "" }
 
-	const handleOnError = (error: Error & { [key: string]: string }) => {
+	const handleOnError = (error: TStringIndex) => {
 		const current = innerRef.current as any
 		if (current) {
 			current.setErrors(error.validation)
@@ -29,8 +32,20 @@ const Todos = () => {
 		taskMutation.mutate(values)
 	}
 
-	const taskMutation = requestCreateTask({ onError: handleOnError })
-	const { data = [], isPending } = requestGetTasks(user._id)
+	const taskMutation = requestCreateTask({
+		onError: handleOnError,
+		token: user.token,
+	})
+	const {
+		data = [],
+		isLoading,
+		error,
+	} = requestGetTasks(user._id, user.token)
+
+	const err = error as AxiosError
+
+	if (isLoading) return null
+	if (err && err.status === 401) return <Box>401</Box>
 
 	return (
 		<TableContainerWrapper>
@@ -72,7 +87,7 @@ const Todos = () => {
 					)
 				}}
 			</Formik>
-			<TodosTable data={data} loading={isPending} />
+			<TodosTable data={data} loading={isLoading} />
 		</TableContainerWrapper>
 	)
 }

@@ -6,10 +6,12 @@ import {
 	RTaskMutation,
 	TTask,
 } from "@/shared/types/todos"
-
+import request from "@/shared/constant/request"
 import { Variables } from "@/shared/constant/variables"
+import { AxiosError } from "axios"
+import { TStringIndex } from "@/shared/types/misc"
 
-export const requestGetTasks = (userId: string) => {
+export const requestGetTasks = (userId: string, token: string) => {
 	return useQuery({
 		enabled: true,
 		retry: false,
@@ -17,16 +19,11 @@ export const requestGetTasks = (userId: string) => {
 		queryKey: ["get-tasks"],
 		staleTime: "static",
 		queryFn: async () => {
-			const res = await fetch(
-				`${Variables.baseQuery}/todos?userId=${userId}`,
-				{
-					method: "GET",
-					headers: { "Content-Type": "application/json" },
-					// credentials: "include",
-				},
-			)
+			const response = await request.get(`/todos?userId=${userId}`, {
+				token,
+			})
 
-			return await res.json()
+			return response.data
 		},
 	})
 }
@@ -38,30 +35,18 @@ export const requestEditTask = <T>(props: RTaskMutation<T>) => {
 		retry: false,
 		mutationKey: ["edit-task"],
 		mutationFn: async (payload: TEditTask) => {
-			const res = await fetch(Variables.baseQuery + "/todos", {
-				method: "PUT",
-				body: JSON.stringify(payload),
-				credentials: "same-origin",
-				headers: { "Content-Type": "application/json" },
+			const response = await request.put(`/todos`, payload, {
+				token: props.token,
 			})
 
-			const data = await res.json()
-
-			if (!res.ok) {
-				let error = new Error("Bad request") as Error & {
-					[key: string]: string
-				}
-
-				error.validation = data
-
-				throw error
-			}
-
-			return data
+			return response.data
 		},
-		onError: (error: Error & { [key: string]: string }) => {
-			if (props.onError) {
-				props.onError(error)
+		onError: (error: Error) => {
+			if (error.name === "AxiosError") {
+				const err = error as AxiosError
+				if (props.onError) {
+					props.onError(err.response?.data as TStringIndex)
+				}
 			}
 		},
 		onSuccess: (data: T, variables: TTask) => {
@@ -87,30 +72,18 @@ export const requestCreateTask = <T>(props: RTaskMutation<T>) => {
 		retry: false,
 		mutationKey: ["create-task"],
 		mutationFn: async (payload: TCreateTask) => {
-			const res = await fetch(Variables.baseQuery + "/todos", {
-				method: "POST",
-				body: JSON.stringify(payload),
-				credentials: "same-origin",
-				headers: { "Content-Type": "application/json" },
+			const { data } = await request.post(`/todos`, payload, {
+				token: props.token,
 			})
-
-			const data = await res.json()
-
-			if (!res.ok) {
-				let error = new Error("Bad request") as Error & {
-					[key: string]: string
-				}
-
-				error.validation = data
-
-				throw error
-			}
 
 			return data
 		},
-		onError: (error: Error & { [key: string]: string }) => {
-			if (props.onError) {
-				props.onError(error)
+		onError: (error: Error) => {
+			if (error.name === "AxiosError") {
+				const err = error as AxiosError
+				if (props.onError) {
+					props.onError(err.response?.data as TStringIndex)
+				}
 			}
 		},
 		onSuccess: (data: T) => {
@@ -128,30 +101,18 @@ export const requestDeleteTaskMutation = <T>(props: RTaskMutation<T>) => {
 		retry: false,
 		mutationKey: ["delete-task"],
 		mutationFn: async (payload: { _id: string; userId: string }) => {
-			const res = await fetch(Variables.baseQuery + "/todos", {
-				method: "DELETE",
-				body: JSON.stringify(payload),
-				credentials: "same-origin",
-				headers: { "Content-Type": "application/json" },
+			const { data } = await request.delete(`/todos`, payload, {
+				token: props.token,
 			})
-
-			const data = await res.json()
-
-			if (!res.ok) {
-				let error = new Error("Bad request") as Error & {
-					[key: string]: string
-				}
-
-				error.validation = data
-
-				throw error
-			}
 
 			return data
 		},
-		onError: (error: Error & { [key: string]: string }) => {
-			if (props.onError) {
-				props.onError(error)
+		onError: (error: Error) => {
+			if (error.name === "AxiosError") {
+				const err = error as AxiosError
+				if (props.onError) {
+					props.onError(err.response?.data as TStringIndex)
+				}
 			}
 		},
 		onSuccess: (data: T, variables: { _id: string; userId: string }) => {
