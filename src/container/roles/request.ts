@@ -3,6 +3,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { TPermission, TRole, TRolesRow } from "@/shared/types/roles"
 
 import { Variables } from "@/shared/constant/variables"
+
+import request from "@/shared/constant/request"
 const formatRows = (data: {
 	permissions: TPermission[]
 	roles: TRole[]
@@ -42,29 +44,18 @@ const formatRows = (data: {
 	return rows
 }
 
-export const requestGetRoles = (roleId: string) => {
+export const requestGetRoles = (roleId: string, token: string) => {
 	return useQuery({
 		enabled: true,
 		retry: false,
 		refetchOnWindowFocus: false,
 		queryKey: ["get-roles"],
 		queryFn: async () => {
-			const response = await fetch(
-				`${Variables.baseQuery}/roles?roleId=${roleId}`,
-			)
+			const response = await request.get(`/roles?roleId=${roleId}`, {
+				token: token,
+			})
 
-			if (response.status === 401) {
-				let error = new Error("Bad request") as Error & {
-					[key: string]: string | number
-				}
-
-				error.validation = await response.json()
-				error.statusCode = response.status
-
-				throw error
-			}
-
-			const data = await response.json()
+			const data = response.data
 
 			const formattedRows = [...formatRows(data)]
 			const duplicateRows = [...formatRows(data)]
@@ -79,18 +70,19 @@ export const requestGetRoles = (roleId: string) => {
 	})
 }
 
-export const requestEditRoles = () => {
+export const requestEditRoles = (token: string) => {
 	const queryClient = useQueryClient()
 	return useMutation({
 		mutationKey: ["edit-roles"],
 		mutationFn: async (payload: TRole[]) => {
-			const response = await fetch(Variables.baseQuery + "/roles", {
-				method: "PUT",
-				body: JSON.stringify({ roles: payload }),
-			})
+			const response = await request.put(
+				`/roles`,
+				{ roles: payload },
+				{ token },
+			)
 
-			if (response.ok) {
-				return await response.json()
+			if (response.status === 200) {
+				return response.data
 			} else {
 				return []
 			}
