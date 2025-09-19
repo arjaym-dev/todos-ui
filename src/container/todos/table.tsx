@@ -17,7 +17,7 @@ import useTodoStore from "@/shared/zustand/todos"
 import { requestEditTask, requestDeleteTaskMutation } from "./request"
 
 const TRow: React.FC<TTask> = (row) => {
-	const { formMode, edit, initialState, setFormMode, setEditTask } =
+	const { formMode, edit, user, initialState, setFormMode, setEditTask } =
 		useTodoStore()
 	const [error, setError] = useState("")
 
@@ -62,8 +62,11 @@ const TRow: React.FC<TTask> = (row) => {
 
 	const isEdit = formMode === "EDIT" && edit._id === row._id
 
-	const editTaskMutation = requestEditTask({ onSuccess: onSuccess })
-	const deleteTaskMutation = requestDeleteTaskMutation({})
+	const editTaskMutation = requestEditTask({
+		onSuccess: onSuccess,
+		token: user.token,
+	})
+	const deleteTaskMutation = requestDeleteTaskMutation({ token: user.token })
 	return (
 		<TableRow>
 			<TableCell>{row._id}</TableCell>

@@ -2,8 +2,6 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { TPermission, TRole, TRolesRow } from "@/shared/types/roles"
 
-import { Variables } from "@/shared/constant/variables"
-
 import request from "@/shared/constant/request"
 const formatRows = (data: {
 	permissions: TPermission[]

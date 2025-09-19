@@ -30,6 +30,13 @@ const request = {
 	) => {
 		return await instance(token).put(url, payload)
 	},
+	delete: async <T>(
+		url: string,
+		payload = {},
+		{ token }: TExtra = { token: "" },
+	) => {
+		return await instance(token).delete(url, { data: payload })
+	},
 }
 
 export default request

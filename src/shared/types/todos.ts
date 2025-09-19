@@ -5,13 +5,15 @@ import {
 	editTaskSchema,
 } from "../validation/todos"
 import { QueryClient } from "@tanstack/react-query"
+import { TStringIndex } from "./misc"
 
 export type TTask = { userId: string; _id: string; task: string }
 
 export type RTaskMutation<T> = {
-	onError?: (error: Error & { [key: string]: string }) => void
+	onError?: (error: TStringIndex) => void
 	onSuccess?: (data?: T) => void
 	queryClient?: QueryClient
+	token?: string
 }
 
 export type TCreateTask = InferType<typeof createTaskSchema>
