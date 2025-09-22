@@ -7,17 +7,18 @@ import List from "@mui/material/List"
 import ListItemButton from "@mui/material/ListItemButton"
 import ListItemIcon from "@mui/material/ListItemIcon"
 import ListItemText from "@mui/material/ListItemText"
+import Skeleton from "@mui/material/Skeleton"
+
 import DashboardIcon from "@mui/icons-material/Dashboard"
 import AssignmentIcon from "@mui/icons-material/Assignment"
 import FingerprintIcon from "@mui/icons-material/Fingerprint"
 
-type TNavItem = { path: string; name: string }
+import useTodoStore from "@/shared/zustand/todos"
 
-const navlinks: TNavItem[] = [
-	{ path: "/dashboard", name: "Dashboard" },
-	{ path: "/todos", name: "Todos" },
-	{ path: "/roles", name: "Roles" },
-]
+import { requestDeleteLogout, requestGetNavlinks } from "./request"
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime"
+
+type TNavItem = { path: string; name: string }
 
 const NavItem: React.FC<TNavItem> = (props) => {
 	const router = useRouter()
@@ -41,31 +42,45 @@ const NavItem: React.FC<TNavItem> = (props) => {
 	)
 }
 
+const SkeletonLoading = () => {
+	return (
+		<ListItemButton>
+			<ListItemIcon>
+				<Skeleton variant="rectangular" width={24} height={24} />
+			</ListItemIcon>
+			<ListItemText>
+				<Skeleton variant="text" height={24} />
+			</ListItemText>
+		</ListItemButton>
+	)
+}
+
 const Sidebar = () => {
 	const router = useRouter()
-	const logoutMutation = useMutation({
-		retry: false,
-		mutationKey: ["logout"],
-		mutationFn: async () => {
-			await fetch("/api/logout", {
-				method: "DELETE",
-				credentials: "same-origin",
-				headers: { "Content-Type": "application/json" },
-			})
-		},
-		onSuccess: () => {
-			router.push("/")
-		},
-	})
+	const { user } = useTodoStore()
 
 	const handleLogout = () => {
 		logoutMutation.mutate()
 	}
 
+	const handleOnSuccess = () => {
+		router.push("/")
+	}
+
+	const { data: navlinks = [] as TNavItem[], isLoading } = requestGetNavlinks(
+		user.token,
+	)
+	const logoutMutation = requestDeleteLogout(
+		{ onSuccess: handleOnSuccess },
+		user.token,
+	)
+
+	if (isLoading) return <SkeletonLoading />
+
 	return (
 		<React.Fragment>
 			<List component={"nav"}>
-				{navlinks.map((nav, index) => (
+				{navlinks.map((nav: TNavItem, index: number) => (
 					<NavItem key={index} {...nav} />
 				))}
 			</List>
