@@ -6,7 +6,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 
 import Box from "@mui/material/Box"
 
-import Sidebar from "./sidebar"
+import Sidebar from "@/container/sidebar"
 
 import { DashboardWrapper } from "./styled"
 

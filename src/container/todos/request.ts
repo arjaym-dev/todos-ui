@@ -7,7 +7,6 @@ import {
 	TTask,
 } from "@/shared/types/todos"
 import request from "@/shared/constant/request"
-import { Variables } from "@/shared/constant/variables"
 import { AxiosError } from "axios"
 import { TStringIndex } from "@/shared/types/misc"
 
