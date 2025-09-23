@@ -1,9 +1,11 @@
 "use client"
 
+import Dashboard from "@/container/dashboard"
+
 const Page = () => {
 	return (
 		<div>
-			<h1>Dashboard Page</h1>
+			<Dashboard />
 		</div>
 	)
 }

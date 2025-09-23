@@ -2,7 +2,7 @@
 
 import React from "react"
 import { useRouter } from "next/navigation"
-import { useMutation } from "@tanstack/react-query"
+
 import List from "@mui/material/List"
 import ListItemButton from "@mui/material/ListItemButton"
 import ListItemIcon from "@mui/material/ListItemIcon"
@@ -16,7 +16,6 @@ import FingerprintIcon from "@mui/icons-material/Fingerprint"
 import useTodoStore from "@/shared/zustand/todos"
 
 import { requestDeleteLogout, requestGetNavlinks } from "./request"
-import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime"
 
 type TNavItem = { path: string; name: string }
 
