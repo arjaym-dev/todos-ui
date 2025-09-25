@@ -28,11 +28,23 @@ const useTodoStore = create<State & Action>()(
 			initialState: {
 				formMode: "CREATE",
 				edit: { userId: "", _id: "", task: "" },
-				user: { _id: "", username: "", roleId: "", token: "" },
+				user: {
+					_id: "",
+					username: "",
+					roleId: "",
+					token: "",
+					navlinks: [],
+				},
 			},
 			formMode: "CREATE",
 			edit: { userId: "", _id: "", task: "" },
-			user: { _id: "", username: "", roleId: "", token: "" },
+			user: {
+				_id: "",
+				username: "",
+				roleId: "",
+				token: "",
+				navlinks: [],
+			},
 			setFormMode: (payload) => set(() => ({ formMode: payload })),
 			setEditTask: (payload: TEditTask) =>
 				set(() => ({ edit: { ...payload } })),

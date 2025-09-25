@@ -69,6 +69,7 @@ const Sidebar = () => {
 	const { data: navlinks = [] as TNavItem[], isLoading } = requestGetNavlinks(
 		user.token,
 	)
+
 	const logoutMutation = requestDeleteLogout(
 		{ onSuccess: handleOnSuccess },
 		user.token,
