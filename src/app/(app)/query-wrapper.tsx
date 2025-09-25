@@ -11,8 +11,6 @@ import { DashboardWrapper } from "./styled"
 export default function QueryWrapper({
 	children,
 }: Readonly<{ children: React.ReactNode }>) {
-	const data = useQueryClient().getQueryData(["get-navlinks"])
-
 	return (
 		<DashboardWrapper>
 			<Box className="sidebar">
