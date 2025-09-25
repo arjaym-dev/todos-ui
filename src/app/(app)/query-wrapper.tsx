@@ -1,7 +1,6 @@
 "use client"
 
 import React from "react"
-import { useQueryClient } from "@tanstack/react-query"
 
 import Box from "@mui/material/Box"
 
@@ -13,9 +12,7 @@ export default function QueryWrapper({
 }: Readonly<{ children: React.ReactNode }>) {
 	return (
 		<DashboardWrapper>
-			<Box className="sidebar">
-				<Sidebar />
-			</Box>
+			<Sidebar />
 			<Box className="content">{children}</Box>
 		</DashboardWrapper>
 	)

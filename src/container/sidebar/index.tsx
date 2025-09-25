@@ -1,8 +1,9 @@
 "use client"
 
 import React from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, usePathname, notFound } from "next/navigation"
 
+import Box from "@mui/material/Box"
 import List from "@mui/material/List"
 import ListItemButton from "@mui/material/ListItemButton"
 import ListItemIcon from "@mui/material/ListItemIcon"
@@ -12,19 +13,20 @@ import Skeleton from "@mui/material/Skeleton"
 import DashboardIcon from "@mui/icons-material/Dashboard"
 import AssignmentIcon from "@mui/icons-material/Assignment"
 import FingerprintIcon from "@mui/icons-material/Fingerprint"
+import LogoutIcon from "@mui/icons-material/Logout"
 
 import useTodoStore from "@/shared/zustand/todos"
 
 import { requestDeleteLogout, requestGetNavlinks } from "./request"
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime"
 
-type TNavItem = { path: string; name: string }
+type TNavItem = { path: string; name: string; router: AppRouterInstance }
 
 const NavItem: React.FC<TNavItem> = (props) => {
-	const router = useRouter()
 	let icon: React.ReactElement = <DashboardIcon />
 
 	const handleNavigate = () => {
-		router.push(props.path)
+		props.router.push(props.path)
 	}
 
 	if (props.name === "Todos") {
@@ -55,7 +57,9 @@ const SkeletonLoading = () => {
 }
 
 const Sidebar = () => {
-	const router = useRouter()
+	const router = useRouter(),
+		pathname = usePathname()
+
 	const { user } = useTodoStore()
 
 	const handleLogout = () => {
@@ -66,7 +70,7 @@ const Sidebar = () => {
 		router.push("/")
 	}
 
-	const { data: navlinks = [] as TNavItem[], isLoading } = requestGetNavlinks(
+	const { data: navlinks = [] as TNavItem[], isPending } = requestGetNavlinks(
 		user.token,
 	)
 
@@ -75,20 +79,37 @@ const Sidebar = () => {
 		user.token,
 	)
 
-	if (isLoading) return <SkeletonLoading />
+	if (isPending) {
+		return (
+			<Box className="sidebar">
+				<SkeletonLoading />
+			</Box>
+		)
+	} else {
+		// const navSet = new Set(
+		// 		navlinks.map((nav: TNavItem) => nav.path),
+		// 	) as Set<string>,
+		// 	hasNavlinks = navSet.has(pathname)
+		// if (!hasNavlinks) {
+		// 	console.log("navlinks", navlinks)
+		// 	router.push(navlinks[0].path)
+		// }
+	}
 
 	return (
-		<React.Fragment>
+		<Box className="sidebar">
 			<List component={"nav"}>
 				{navlinks.map((nav: TNavItem, index: number) => (
-					<NavItem key={index} {...nav} />
+					<NavItem {...nav} key={index} router={router} />
 				))}
 			</List>
 			<ListItemButton onClick={handleLogout}>
-				<ListItemIcon></ListItemIcon>
+				<ListItemIcon>
+					<LogoutIcon />
+				</ListItemIcon>
 				<ListItemText>Logout</ListItemText>
 			</ListItemButton>
-		</React.Fragment>
+		</Box>
 	)
 }
 
