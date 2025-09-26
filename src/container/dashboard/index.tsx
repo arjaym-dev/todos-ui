@@ -1,6 +1,9 @@
 "use client"
 
+import React from "react"
 import Box from "@mui/material/Box"
+
+import withAuth from "@/shared/lib/with-auth"
 
 const Dashboard = () => {
 	return (
@@ -10,4 +13,4 @@ const Dashboard = () => {
 	)
 }
 
-export default Dashboard
+export default withAuth(Dashboard)

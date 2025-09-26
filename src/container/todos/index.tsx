@@ -38,13 +38,14 @@ const Todos = () => {
 	})
 	const {
 		data = [],
-		isLoading,
+		isPending,
 		error,
 	} = requestGetTasks(user._id, user.token)
 
 	const err = error as AxiosError
 
-	if (isLoading) return null
+	if (isPending) return <p>Loading...</p>
+
 	if (err && err.status === 401) return <Box>401</Box>
 
 	return (
@@ -87,7 +88,7 @@ const Todos = () => {
 					)
 				}}
 			</Formik>
-			<TodosTable data={data} loading={isLoading} />
+			<TodosTable data={data} loading={isPending} />
 		</TableContainerWrapper>
 	)
 }

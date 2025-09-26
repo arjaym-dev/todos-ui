@@ -3,4 +3,5 @@ export type TUser = {
 	username: string
 	roleId: string
 	token: string
+	navlinks: { name: string; path: string }[]
 }

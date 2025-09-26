@@ -1,7 +1,6 @@
 import { useQuery, useMutation } from "@tanstack/react-query"
 
 import request from "@/shared/constant/request"
-import { RTaskMutation } from "@/shared/types/todos"
 
 export const requestGetNavlinks = (token: string) => {
 	return useQuery({

@@ -60,7 +60,7 @@ const Sidebar = () => {
 	const router = useRouter(),
 		pathname = usePathname()
 
-	const { user } = useTodoStore()
+	const { user, setUser } = useTodoStore()
 
 	const handleLogout = () => {
 		logoutMutation.mutate()
@@ -85,17 +85,17 @@ const Sidebar = () => {
 				<SkeletonLoading />
 			</Box>
 		)
-	} else {
-		// const navSet = new Set(
-		// 		navlinks.map((nav: TNavItem) => nav.path),
-		// 	) as Set<string>,
-		// 	hasNavlinks = navSet.has(pathname)
-		// if (!hasNavlinks) {
-		// 	console.log("navlinks", navlinks)
-		// 	router.push(navlinks[0].path)
-		// }
 	}
 
+	// const navSet = new Set(
+	// 		navlinks.map((nav: TNavItem) => nav.path),
+	// 	) as Set<string>,
+	// 	hasNavlinks = navSet.has(pathname)
+
+	// if (!hasNavlinks) {
+	// 	console.log("navlinks", navlinks)
+	// 	router.push(navlinks[0].path)
+	// }
 	return (
 		<Box className="sidebar">
 			<List component={"nav"}>

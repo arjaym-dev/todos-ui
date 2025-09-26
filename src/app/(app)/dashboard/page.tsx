@@ -3,11 +3,7 @@
 import Dashboard from "@/container/dashboard"
 
 const Page = () => {
-	return (
-		<div>
-			<Dashboard />
-		</div>
-	)
+	return <Dashboard />
 }
 
 export default Page
