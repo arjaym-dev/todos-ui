@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react"
 import Box from "@mui/material/Box"
 import CheckBox, { CheckboxProps } from "@mui/material/Checkbox"
@@ -6,7 +5,6 @@ import Button, { ButtonProps } from "@mui/material/Button"
 
 import {
 	DataGrid,
-	GridRowsProp,
 	GridRenderCellParams,
 	DataGridProps,
 	GridColDef,
@@ -20,6 +18,7 @@ import { TRole, TRolesRow } from "@/shared/types/roles"
 
 import { RolesWrapperSx } from "./styled"
 import Error from "next/error"
+import { AxiosError } from "axios"
 
 const valueGetter = (value: string, row: any, column: GridColDef) => {
 	const field = column.field,
@@ -95,22 +94,24 @@ const columns: GridColDef[] = [
 const Roles = () => {
 	const apiRef = useGridApiRef()
 	const { user } = useTodoStore()
-	const getRolesQuery = requestGetRoles(user.roleId)
-	const editRolesMutation = requestEditRoles()
 
-	const error = getRolesQuery.error as unknown as Error & {
-		[key: string]: any
-	}
+	const {
+		error,
+		isLoading,
+		data = {},
+	} = requestGetRoles(user.roleId, user.token)
+	const editRolesMutation = requestEditRoles(user.token)
 
-	if (getRolesQuery.isLoading) return null
+	const er = error as AxiosError
 
-	if (error && error.statusCode === 401) return <Box>401</Box>
+	if (isLoading) return null
+	if (er && er.status === 401) return <Box>401</Box>
 
 	const {
 		rows = [],
 		roles = [],
 		duplicateRows = [],
-	} = getRolesQuery.data as {
+	} = data as {
 		rows: TRolesRow[]
 		roles: TRole[]
 		duplicateRows: TRolesRow[]

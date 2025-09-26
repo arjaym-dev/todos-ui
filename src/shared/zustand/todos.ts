@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
 
@@ -29,11 +28,23 @@ const useTodoStore = create<State & Action>()(
 			initialState: {
 				formMode: "CREATE",
 				edit: { userId: "", _id: "", task: "" },
-				user: { _id: "", username: "", roleId: "" },
+				user: {
+					_id: "",
+					username: "",
+					roleId: "",
+					token: "",
+					navlinks: [],
+				},
 			},
 			formMode: "CREATE",
 			edit: { userId: "", _id: "", task: "" },
-			user: { _id: "", username: "", roleId: "" },
+			user: {
+				_id: "",
+				username: "",
+				roleId: "",
+				token: "",
+				navlinks: [],
+			},
 			setFormMode: (payload) => set(() => ({ formMode: payload })),
 			setEditTask: (payload: TEditTask) =>
 				set(() => ({ edit: { ...payload } })),

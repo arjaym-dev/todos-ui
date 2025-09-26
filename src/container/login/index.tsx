@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useRef } from "react"
 import { useRouter } from "next/navigation"
 import { SxProps, Theme } from "@mui/material"
@@ -14,6 +13,8 @@ import useTodoStore from "@/shared/zustand/todos"
 
 import { requestLogin } from "./request"
 import { TUser } from "@/shared/types/user"
+import { TStringIndex } from "@/shared/types/misc"
+
 const ContainerSx: SxProps<Theme> = {
 	"&": {
 		justifyContent: "center",
@@ -34,10 +35,10 @@ const Login = () => {
 	const router = useRouter()
 	const { setUser } = useTodoStore()
 
-	const handleOnError = (error: Error & { [key: string]: string }) => {
+	const handleOnError = (error: TStringIndex) => {
 		const current = innerRef.current as any
 		if (current) {
-			current.setErrors(error.validation)
+			current.setErrors(error)
 		}
 	}
 

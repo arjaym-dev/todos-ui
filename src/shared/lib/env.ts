@@ -1,6 +1,5 @@
 const ENV = {
-	MONGODB_URI: process.env.MONGODB_URI,
-	SESSION_SECRET_KEY: process.env.SESSION_SECRET_KEY,
-} as { MONGODB_URI: string; SESSION_SECRET_KEY: string }
+	NEXT_PUBLIC_REQUEST_BASE_QUERY: process.env.NEXT_PUBLIC_REQUEST_BASE_QUERY,
+} as { NEXT_PUBLIC_REQUEST_BASE_QUERY: string }
 
 export default ENV
