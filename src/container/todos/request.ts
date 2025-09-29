@@ -15,8 +15,7 @@ export const requestGetTasks = (userId: string, token: string) => {
 		enabled: true,
 		retry: false,
 		refetchOnWindowFocus: false,
-		queryKey: ["get-tasks"],
-		staleTime: "static",
+		queryKey: ["get-tasks", token],
 		queryFn: async () => {
 			const response = await request.get(`/todos?userId=${userId}`, {
 				token,
@@ -49,15 +48,18 @@ export const requestEditTask = <T>(props: RTaskMutation<T>) => {
 			}
 		},
 		onSuccess: (data: T, variables: TTask) => {
-			queryClient.setQueryData(["get-tasks"], (prevTasks: TTask[]) => {
-				return prevTasks.map((task: TTask) => {
-					if (variables._id === task._id) {
-						return { ...task, ...data }
-					} else {
-						return task
-					}
-				})
-			})
+			queryClient.setQueryData(
+				["get-tasks", props.token],
+				(prevTasks: TTask[]) => {
+					return prevTasks.map((task: TTask) => {
+						if (variables._id === task._id) {
+							return { ...task, ...data }
+						} else {
+							return task
+						}
+					})
+				},
+			)
 
 			if (props.onSuccess) props.onSuccess(data)
 		},
@@ -86,9 +88,12 @@ export const requestCreateTask = <T>(props: RTaskMutation<T>) => {
 			}
 		},
 		onSuccess: (data: T) => {
-			queryClient.setQueryData(["get-tasks"], (prevTasks: TTask[]) => {
-				return prevTasks ? [...prevTasks, data] : prevTasks
-			})
+			queryClient.setQueryData(
+				["get-tasks", props.token],
+				(prevTasks: TTask[]) => {
+					return prevTasks ? [...prevTasks, data] : prevTasks
+				},
+			)
 		},
 	})
 }
@@ -115,9 +120,12 @@ export const requestDeleteTaskMutation = <T>(props: RTaskMutation<T>) => {
 			}
 		},
 		onSuccess: (data: T, variables: { _id: string; userId: string }) => {
-			queryClient.setQueryData(["get-tasks"], (prevTasks: TTask[]) => {
-				return prevTasks.filter((task) => task._id != variables._id)
-			})
+			queryClient.setQueryData(
+				["get-tasks", props.token],
+				(prevTasks: TTask[]) => {
+					return prevTasks.filter((task) => task._id != variables._id)
+				},
+			)
 		},
 	})
 }
