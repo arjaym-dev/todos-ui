@@ -5,6 +5,8 @@ import Box from "@mui/material/Box"
 import CircularProgress from "@mui/material/CircularProgress"
 
 import useTodoStore from "@/shared/zustand/todos"
+import { decrypt } from "./token"
+
 import { requestGetNavlinks } from "@/container/sidebar/request"
 
 const withAuth = (Content: React.ComponentType) => {
@@ -16,7 +18,9 @@ const withAuth = (Content: React.ComponentType) => {
 
 		const { user } = useTodoStore()
 
-		const { data: navlinks, isPending } = requestGetNavlinks(user.token)
+		const { data: navlinks = [], isPending } = requestGetNavlinks(
+			user.token,
+		)
 
 		React.useLayoutEffect(() => {
 			if (!isPending) {
@@ -27,11 +31,20 @@ const withAuth = (Content: React.ComponentType) => {
 					) as Set<string>,
 					hasNavlinks = navSet.has(pathname)
 
-				if (!hasNavlinks) {
+				if (!hasNavlinks && navlinks.length > 0) {
 					router.push(navlinks[0].path)
 
 					return
 				}
+
+				async function isAuth() {
+					const token = await decrypt(user.token)
+
+					if (token === "JWTExpired") router.push("/")
+					return
+				}
+
+				isAuth()
 
 				setRender(true)
 			}
