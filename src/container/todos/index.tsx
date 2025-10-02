@@ -10,6 +10,7 @@ import useTodoStore from "@/shared/zustand/todos"
 
 import { TCreateTask } from "@/shared/types/todos"
 import { createTaskSchema } from "@/shared/validation/todos"
+import withAuth from "@/shared/lib/with-auth"
 
 import TodosTable from "./table"
 import { requestCreateTask, requestGetTasks } from "./request"
@@ -93,4 +94,4 @@ const Todos = () => {
 	)
 }
 
-export default Todos
+export default withAuth(Todos)

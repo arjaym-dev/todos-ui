@@ -47,7 +47,7 @@ export const requestGetRoles = (roleId: string, token: string) => {
 		enabled: true,
 		retry: false,
 		refetchOnWindowFocus: false,
-		queryKey: ["get-roles"],
+		queryKey: ["get-roles", token],
 		queryFn: async () => {
 			const response = await request.get(`/roles?roleId=${roleId}`, {
 				token: token,
@@ -86,13 +86,18 @@ export const requestEditRoles = (token: string) => {
 			}
 		},
 		onSuccess: (data, variables) => {
-			queryClient.setQueryData(["get-roles"], (prevRoles: any) => {
+			queryClient.setQueryData(["get-roles", token], (prevRoles: any) => {
 				const formattedRows = formatRows({
 					roles: variables,
 					permissions: prevRoles.permissions,
 				})
 
-				return { ...prevRoles, rows: formattedRows, roles: variables }
+				return {
+					...prevRoles,
+					duplicateRows: formattedRows,
+					rows: formattedRows,
+					roles: variables,
+				}
 			})
 		},
 	})

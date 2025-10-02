@@ -7,8 +7,7 @@ export const requestGetNavlinks = (token: string) => {
 		enabled: token.length > 0,
 		retry: false,
 		refetchOnWindowFocus: false,
-		queryKey: ["get-navlinks"],
-		// staleTime: "static",
+		queryKey: ["get-navlinks", token],
 		queryFn: async () => {
 			const response = await request.get(`/navlinks`, { token })
 

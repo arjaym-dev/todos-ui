@@ -87,15 +87,6 @@ const Sidebar = () => {
 		)
 	}
 
-	// const navSet = new Set(
-	// 		navlinks.map((nav: TNavItem) => nav.path),
-	// 	) as Set<string>,
-	// 	hasNavlinks = navSet.has(pathname)
-
-	// if (!hasNavlinks) {
-	// 	console.log("navlinks", navlinks)
-	// 	router.push(navlinks[0].path)
-	// }
 	return (
 		<Box className="sidebar">
 			<List component={"nav"}>

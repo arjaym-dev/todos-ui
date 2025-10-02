@@ -13,11 +13,12 @@ import {
 } from "@mui/x-data-grid"
 
 import useTodoStore from "@/shared/zustand/todos"
+import withAuth from "@/shared/lib/with-auth"
 import { requestEditRoles, requestGetRoles } from "./request"
 import { TRole, TRolesRow } from "@/shared/types/roles"
 
 import { RolesWrapperSx } from "./styled"
-import Error from "next/error"
+
 import { AxiosError } from "axios"
 
 const valueGetter = (value: string, row: any, column: GridColDef) => {
@@ -176,4 +177,4 @@ const Roles = () => {
 	)
 }
 
-export default Roles
+export default withAuth(Roles)
