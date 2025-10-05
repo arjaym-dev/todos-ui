@@ -1,4 +1,4 @@
-name: Build Todos UI
+name: Build, Test & Push Image to Docker
 run-name: ${{ github.repository }} start building by ${{github.actor}}...
 on:
     pull_request:

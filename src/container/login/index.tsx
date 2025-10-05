@@ -97,6 +97,9 @@ const Login = () => {
 							onChange: handleChange,
 							slotProps: {
 								htmlInput: { "data-testid": "password" },
+								formHelperText: {
+									"data-testid": "password-error",
+								} as any,
 							},
 						}
 
