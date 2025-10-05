@@ -22,8 +22,9 @@ jobs:
             - name: Build application image
               uses: docker/build-push-action@v6
               with:
-                  tags: arjaym/todos-ui:latest
-                  push: false
+                  context: . # Ensure context is set to the repo root
+                  tags: ${{ jobs.build.outputs.image_tag }} # Use the unique SHA tag
+                  push: true # 🔑 CRITICAL FIX: Must push the SHA tag so 'test' job can pull it
     test:
         runs-on: ubuntu-latest
         needs: build
