@@ -32,11 +32,7 @@ jobs:
               uses: actions/checkout@v4
 
             - name: Running test for application
-              run: |
-                  # Run tests inside a container created from the image
-                  docker run --rm \
-                      ${{ needs.build.outputs.image_tag }} \ # Unique SHA tag
-                      npm run test
+              run: npm run test
     push:
         runs-on: ubuntu-latest
         needs: [build, test]
@@ -50,9 +46,7 @@ jobs:
               uses: docker/build-push-action@v6
               with:
                   context: .
-                  tags: |
-                      ${{ needs.build.outputs.image_tag }} # Unique SHA tag
-                      arjaym/todos-ui:latest
+                  tags: arjaym/todos-ui:latest
                   push: true
     deployment:
         runs-on: ubuntu-latest
