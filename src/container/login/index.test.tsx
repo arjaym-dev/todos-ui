@@ -44,9 +44,9 @@ describe("Render Login Page", () => {
 			</QueryClientProvider>,
 		)
 
-		const username = screen.getByTestId("usernamee")
-		const password = screen.getByTestId("passwordd")
-		const loginButton = screen.getByTestId("login-buttonn")
+		const username = screen.getByTestId("username")
+		const password = screen.getByTestId("password")
+		const loginButton = screen.getByTestId("login-button")
 
 		// Act
 
