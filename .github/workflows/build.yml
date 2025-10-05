@@ -25,7 +25,6 @@ jobs:
             - name: Build and push application image
               uses: docker/build-push-action@v6
               with:
-                  context: .
                   tags: arjaym/todos-ui:${{ github.sha }}
                   outputs: "tag=arjaym/todos-ui:${{ github.sha }}" # Export the tag
                   push: false # Build locally only
