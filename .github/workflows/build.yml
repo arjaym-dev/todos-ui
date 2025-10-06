@@ -1,4 +1,4 @@
-name: Build Todos UI
+name: Build, Test & Push Image to Docker
 run-name: ${{ github.repository }} start building by ${{github.actor}}...
 on:
     pull_request:
@@ -19,15 +19,24 @@ jobs:
               with:
                   images: arjaym/todos-ui:latest
 
-            - name: Build & Push Image to Docker Hub
+            - name: Build and push application image
               uses: docker/build-push-action@v6
               with:
                   tags: arjaym/todos-ui:latest
                   push: true
-
-    deployment:
+    test:
         runs-on: ubuntu-latest
         needs: build
+        steps:
+            - name: Checkout application repo
+              uses: actions/checkout@v4
+            - name: Install dependencies
+              run: npm install
+            - name: Running test
+              run: npm run test
+    deployment:
+        runs-on: ubuntu-latest
+        needs: [build, test]
         steps:
             - name: Deployment to EC2
               uses: appleboy/ssh-action@v1.0.3

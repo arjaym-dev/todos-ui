@@ -77,6 +77,12 @@ const Login = () => {
 							type: "text",
 							value: values.username,
 							onChange: handleChange,
+							slotProps: {
+								htmlInput: { "data-testid": "username" },
+								formHelperText: {
+									"data-testid": "username-error",
+								} as any,
+							},
 						}
 
 						const passwordProps: TextFieldProps = {
@@ -89,14 +95,23 @@ const Login = () => {
 							type: "password",
 							value: values.password,
 							onChange: handleChange,
+							slotProps: {
+								htmlInput: { "data-testid": "password" },
+								formHelperText: {
+									"data-testid": "password-error",
+								} as any,
+							},
 						}
 
-						const buttonProps: ButtonProps = {
+						const buttonProps: ButtonProps & {
+							"data-testid": string
+						} = {
 							disabled: loginMutation.isPending,
 							fullWidth: true,
 							variant: "contained",
 							size: "small",
 							type: "submit",
+							"data-testid": "login-button",
 						}
 
 						return (
