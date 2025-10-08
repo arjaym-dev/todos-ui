@@ -5,6 +5,8 @@ import React from "react"
 import Box from "@mui/material/Box"
 
 import Sidebar from "@/container/sidebar"
+import NavBar from "@/container/navbar"
+import { DrawerHeader } from "@/container/sidebar/styled"
 import { DashboardWrapper } from "./styled"
 
 export default function QueryWrapper({
@@ -12,8 +14,12 @@ export default function QueryWrapper({
 }: Readonly<{ children: React.ReactNode }>) {
 	return (
 		<DashboardWrapper>
+			<NavBar />
 			<Sidebar />
-			<Box className="content">{children}</Box>
+			<Box className="content">
+				<DrawerHeader />
+				{children}
+			</Box>
 		</DashboardWrapper>
 	)
 }
