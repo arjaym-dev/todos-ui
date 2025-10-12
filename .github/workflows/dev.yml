@@ -1,0 +1,58 @@
+name: Development Stage
+run-name: ${{ github.repository }} start building by ${{github.actor}}...
+on:
+  pull_request:
+    types:
+      - closed
+jobs:
+  build:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Setup Docker
+        uses: docker/setup-buildx-action@v3
+        with:
+          images: arjaym/todos-ui:latest
+
+      - name: Build and push application image
+        uses: docker/build-push-action@v6
+        with:
+          tags: arjaym/todos-ui:latest
+          push: true
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout application repo
+        uses: actions/checkout@v4
+      - name: Install dependencies
+        run: npm install
+      - name: Running test
+        run: npm run test
+  deployment:
+    runs-on: ubuntu-latest
+    needs: [build, test]
+    steps:
+      - name: Deployment to EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          script: |
+            # Pull the latest Docker image
+            sudo docker pull arjaym/todos-ui:latest
+            # Stop any existing container
+            sudo docker stop todos-ui
+            # Remove the old container
+            sudo docker rm todos-ui
+            # Run a new container with the updated image
+            sudo docker run -d \
+            --name todos-ui \
+            -p 3000:3000 \
+            arjaym/todos-ui:latest
