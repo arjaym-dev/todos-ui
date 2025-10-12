@@ -1,37 +1,25 @@
-import {
-	expect,
-	vi,
-	it,
-	describe,
-	beforeAll,
-	afterEach,
-	afterAll,
-} from "vitest"
+import { expect, vi, it, describe, afterEach } from "vitest"
 import { cleanup, render, screen } from "@testing-library/react"
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query"
 
 import { http, HttpResponse } from "msw"
-import { setupServer } from "msw/node"
+
 import userEvent from "@testing-library/user-event"
+
+import { server } from "@/shared/config/vitest"
 
 import Login from "./index"
 
-// Create a client
 const queryClient = new QueryClient()
 const loginUrl = "/api/login"
+const mockPush = vi.fn()
 
-const server = setupServer()
-
-// Start server before all tests, close after all tests, and reset handlers after each test
-beforeAll(() => server.listen())
 afterEach(() => {
-	server.resetHandlers()
+	server.close()
 	cleanup()
 })
-afterAll(() => server.close())
-// ------------------------
 
-vi.mock("next/navigation")
+vi.mock("next/navigation", () => ({ useRouter: () => ({ push: mockPush }) }))
 
 describe("Render Login Page", () => {
 	const user = userEvent.setup()
@@ -147,5 +135,9 @@ describe("Render Login Page", () => {
 		await user.type(username, "admin")
 		await user.type(password, "invalid")
 		await user.click(loginButton)
+
+		vi.waitFor(() => {
+			expect(mockPush).toHaveBeenCalledWith("/dashboard")
+		})
 	})
 })

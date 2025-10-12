@@ -1,31 +1,42 @@
 "use client"
 
 import React from "react"
-import { useRouter, usePathname, notFound } from "next/navigation"
+import { useRouter } from "next/navigation"
 
 import Box from "@mui/material/Box"
+
 import List from "@mui/material/List"
 import ListItemButton from "@mui/material/ListItemButton"
 import ListItemIcon from "@mui/material/ListItemIcon"
 import ListItemText from "@mui/material/ListItemText"
 import Skeleton from "@mui/material/Skeleton"
+import IconButton from "@mui/material/IconButton"
+import Divider from "@mui/material/Divider"
 
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft"
+import ChevronRightIcon from "@mui/icons-material/ChevronRight"
 import DashboardIcon from "@mui/icons-material/Dashboard"
 import AssignmentIcon from "@mui/icons-material/Assignment"
 import FingerprintIcon from "@mui/icons-material/Fingerprint"
-import LogoutIcon from "@mui/icons-material/Logout"
+
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime"
 
 import useTodoStore from "@/shared/zustand/todos"
+import useSettingStore from "@/shared/zustand/profile"
 
-import { requestDeleteLogout, requestGetNavlinks } from "./request"
-import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime"
+import { Drawer, DrawerHeader } from "./styled"
+import { requestGetNavlinks } from "./request"
 
 type TNavItem = { path: string; name: string; router: AppRouterInstance }
 
 const NavItem: React.FC<TNavItem> = (props) => {
+	const { sidebar, setSettingSidebar } = useSettingStore()
+
 	let icon: React.ReactElement = <DashboardIcon />
 
 	const handleNavigate = () => {
+		if (!sidebar) setSettingSidebar()
+
 		props.router.push(props.path)
 	}
 
@@ -57,25 +68,15 @@ const SkeletonLoading = () => {
 }
 
 const Sidebar = () => {
-	const router = useRouter(),
-		pathname = usePathname()
+	const router = useRouter()
 
-	const { user, setUser } = useTodoStore()
+	const { sidebar, drawerWidth, setSettingSidebar } = useSettingStore()
+	const { user } = useTodoStore()
 
-	const handleLogout = () => {
-		logoutMutation.mutate()
+	const handleToggleSidebar = () => {
+		setSettingSidebar()
 	}
-
-	const handleOnSuccess = () => {
-		router.push("/")
-	}
-
 	const { data: navlinks = [] as TNavItem[], isPending } = requestGetNavlinks(
-		user.token,
-	)
-
-	const logoutMutation = requestDeleteLogout(
-		{ onSuccess: handleOnSuccess },
 		user.token,
 	)
 
@@ -88,19 +89,24 @@ const Sidebar = () => {
 	}
 
 	return (
-		<Box className="sidebar">
-			<List component={"nav"}>
-				{navlinks.map((nav: TNavItem, index: number) => (
-					<NavItem {...nav} key={index} router={router} />
-				))}
-			</List>
-			<ListItemButton onClick={handleLogout}>
-				<ListItemIcon>
-					<LogoutIcon />
-				</ListItemIcon>
-				<ListItemText>Logout</ListItemText>
-			</ListItemButton>
-		</Box>
+		<React.Fragment>
+			<Drawer
+				variant="permanent"
+				open={sidebar}
+				drawerWidth={drawerWidth}>
+				<DrawerHeader>
+					<IconButton onClick={handleToggleSidebar}>
+						{sidebar ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+					</IconButton>
+				</DrawerHeader>
+				<Divider />
+				<List>
+					{navlinks.map((nav: TNavItem, index: number) => (
+						<NavItem {...nav} key={index} router={router} />
+					))}
+				</List>
+			</Drawer>
+		</React.Fragment>
 	)
 }
 
