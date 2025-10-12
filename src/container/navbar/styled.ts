@@ -5,7 +5,7 @@ type CustomAppBarProps = AppBarProps & { open?: boolean; drawerWidth: number }
 
 export const AppBar = styled(MuiAppBar, {
 	shouldForwardProp: (prop) => prop !== "open" && prop !== "drawerWidth",
-})<CustomAppBarProps>(({ theme, drawerWidth }) => ({
+})<CustomAppBarProps>(({ theme, drawerWidth, open }) => ({
 	zIndex: theme.zIndex.drawer + 1,
 	transition: theme.transitions.create(["width", "margin"], {
 		easing: theme.transitions.easing.sharp,
@@ -24,4 +24,13 @@ export const AppBar = styled(MuiAppBar, {
 			},
 		},
 	],
+
+	".MuiToolbar-root": {
+		display: "flex",
+		justifyContent: "space-between",
+		".menu": {
+			marginRight: "5px",
+			visibility: open ? "hidden" : "visible",
+		},
+	},
 }))
