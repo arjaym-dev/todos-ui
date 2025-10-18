@@ -41,7 +41,7 @@ jobs:
     needs: [build, test]
     steps:
       - name: Deployment to EC2 using SSH Remote Commands
-        uses: appleboy/ssh-action@v1.1.0
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.EC2_TODOS_HOST }}
           username: ${{ secrets.EC2_TODOS_USERNAME }}
