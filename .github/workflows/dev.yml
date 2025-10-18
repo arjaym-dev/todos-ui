@@ -50,11 +50,11 @@ jobs:
             # Pull the latest Docker image
             sudo docker pull arjaym/todos-ui:latest
             # Stop any existing container
-            sudo docker stop todos-ui
+            sudo docker stop todos-ui-dev
             # Remove the old container
-            sudo docker rm todos-ui
+            sudo docker rm todos-ui-dev
             # Run a new container with the updated image
             sudo docker run -d \
-            --name todos-ui \
+            --name todos-ui-dev \
             -p 3000:3000 \
             arjaym/todos-ui:latest
