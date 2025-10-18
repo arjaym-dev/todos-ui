@@ -44,7 +44,7 @@ jobs:
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_TODOS_HOST }}
-          username: ${{ secrets.DOCKER_USERNAME }}
+          username: ${{ secrets.EC2_TODOS_USERNAME }}
           key: ${{ secrets.EC2_TODOS_SSH_GITHUB_ACTION }}
           script: |
             # Pull the latest Docker image
