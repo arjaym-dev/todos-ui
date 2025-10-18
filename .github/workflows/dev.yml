@@ -41,12 +41,14 @@ jobs:
     needs: [build, test]
     steps:
       - name: Deployment to EC2
-        uses: appleboy/ssh-action@v1.0.3
+        uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.EC2_TODOS_HOST }}
           username: ${{ secrets.EC2_TODOS_USERNAME }}
           key: ${{ secrets.EC2_TODOS_SSH_GITHUB_ACTION }}
           script: |
+            # WHOAMI
+            whoami
             # Pull the latest Docker image
             sudo docker pull arjaym/todos-ui:latest
             # Stop any existing container
