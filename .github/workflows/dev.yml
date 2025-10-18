@@ -45,7 +45,7 @@ jobs:
         with:
           host: ${{ secrets.EC2_TODOS_HOST }}
           username: ${{ secrets.EC2_TODOS_USERNAME }}
-          key: ${{ secrets.EC2_TODOS_SSH_GITHUB_ACTION }}
+          key_path: ~/.ssh/github_action
           script: |
             # Pull the latest Docker image
             sudo docker pull arjaym/todos-ui:latest
