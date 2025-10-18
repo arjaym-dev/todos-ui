@@ -41,11 +41,11 @@ jobs:
     needs: [build, test]
     steps:
       - name: Deployment to EC2 using SSH Remote Commands
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v1.2.2
         with:
           host: ${{ secrets.EC2_TODOS_HOST }}
           username: ${{ secrets.EC2_TODOS_USERNAME }}
-          key: ${{ secrets.EC2_TODOS_SSH_GITHUB_ACTION }}
+          key: ${{ secrets.EC2_TODOS_SSH_GITHUB_ACTION_RSA }}
           script: |
             # Pull the latest Docker image
             sudo docker pull arjaym/todos-ui:latest
