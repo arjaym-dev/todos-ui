@@ -29,7 +29,7 @@ COPY --from=builder /app/public ./public/
 COPY --from=builder /app/.next ./.next/
 
 
-
-EXPOSE 3000
+# Can remove this since we are defining the container port on docker run
+# EXPOSE 3000
 
 CMD [ "npx","next","start" ]
