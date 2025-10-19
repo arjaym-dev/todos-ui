@@ -56,5 +56,5 @@ jobs:
                       # Run a new container with the updated image
                       sudo docker run -d \
                       --name todos-ui-int \
-                      -p 4000:4000 \
+                      -p 4000:3000 \
                       arjaym/todos-ui:latest
