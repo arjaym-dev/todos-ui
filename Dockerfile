@@ -1,5 +1,4 @@
 ARG NODE_VERSION=22.18.0
-ARG BASE_URL_QUERY=http://3.0.97.40/api
 
 # Use node image for base image for all stages.
 FROM node:${NODE_VERSION}-alpine AS builder 
