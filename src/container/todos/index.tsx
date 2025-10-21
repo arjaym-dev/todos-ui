@@ -49,6 +49,7 @@ const Todos = () => {
 
 	if (err && err.status === 401) return <Box>401</Box>
 
+	console.log("adding logs")
 	return (
 		<TableContainerWrapper>
 			<Formik
