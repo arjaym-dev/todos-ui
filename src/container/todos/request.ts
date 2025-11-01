@@ -9,6 +9,7 @@ import {
 import request from "@/shared/constant/request"
 import { AxiosError } from "axios"
 import { TStringIndex } from "@/shared/types/misc"
+import { TLinks } from "@/shared/types/user"
 
 export const requestGetTasks = (userId: string, token: string) => {
 	return useQuery({
@@ -50,14 +51,17 @@ export const requestEditTask = <T>(props: RTaskMutation<T>) => {
 		onSuccess: (data: T, variables: TTask) => {
 			queryClient.setQueryData(
 				["get-tasks", props.token],
-				(prevTasks: TTask[]) => {
-					return prevTasks.map((task: TTask) => {
+				(prevTasks: { items: TTask[]; links: TLinks }) => {
+					const items = prevTasks.items
+
+					const updatedItems = items.map((task: TTask) => {
 						if (variables._id === task._id) {
 							return { ...task, ...data }
 						} else {
 							return task
 						}
 					})
+					return { ...prevTasks, items: updatedItems }
 				},
 			)
 
