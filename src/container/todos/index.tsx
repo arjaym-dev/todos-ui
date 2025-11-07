@@ -8,7 +8,7 @@ import { Formik, Form } from "formik"
 
 import useTodoStore from "@/shared/zustand/todos"
 
-import { TCreateTask } from "@/shared/types/todos"
+import { TCreateTask, TTask } from "@/shared/types/todos"
 import { createTaskSchema } from "@/shared/validation/todos"
 import withAuth from "@/shared/lib/with-auth"
 
@@ -16,6 +16,8 @@ import TodosTable from "./table"
 import { requestCreateTask, requestGetTasks } from "./request"
 import { TableContainerWrapper } from "./styled"
 import { TStringIndex } from "@/shared/types/misc"
+import { TLinks } from "@/shared/types/user"
+import ArrayCollect from "@/shared/lib/array-collect"
 
 const Todos = () => {
 	const innerRef = useRef(null)
@@ -38,7 +40,7 @@ const Todos = () => {
 		token: user.token,
 	})
 	const {
-		data = [],
+		data = { items: [] as TTask[], links: [] as TLinks },
 		isPending,
 		error,
 	} = requestGetTasks(user._id, user.token)
@@ -49,47 +51,56 @@ const Todos = () => {
 
 	if (err && err.status === 401) return <Box>401</Box>
 
+	const createTodosPerm = ArrayCollect.getObjByKey<TTask>(
+		data.links,
+		"rel",
+		"create-todos",
+	)
+
 	return (
 		<TableContainerWrapper>
-			<Formik
-				innerRef={innerRef}
-				initialValues={form}
-				validationSchema={createTaskSchema}
-				onSubmit={handleOnSubmit}>
-				{({ errors, values, handleChange }) => {
-					const taskInputProps: TextFieldProps = {
-						error: errors && errors.task ? true : false,
-						helperText: errors && errors.task,
-						size: "small",
-						name: "task",
-						placeholder: "Enter task...",
-						value: values.task,
-						onChange: handleChange,
-						disabled: formMode === "EDIT",
-					}
+			{createTodosPerm && (
+				<Formik
+					innerRef={innerRef}
+					initialValues={form}
+					validationSchema={createTaskSchema}
+					onSubmit={handleOnSubmit}>
+					{({ errors, values, handleChange }) => {
+						const taskInputProps: TextFieldProps = {
+							error: errors && errors.task ? true : false,
+							helperText: errors && errors.task,
+							size: "small",
+							name: "task",
+							placeholder: "Enter task...",
+							value: values.task,
+							onChange: handleChange,
+							disabled: formMode === "EDIT",
+						}
 
-					return (
-						<Form>
-							<Box className="searchbar">
-								<TextField {...taskInputProps} />
-								<Button
-									size="small"
-									variant="contained"
-									color="success"
-									type="submit"
-									disabled={
-										taskMutation.isPending ||
-										values.task === "" ||
-										formMode === "EDIT"
-									}>
-									Create Task
-								</Button>
-							</Box>
-						</Form>
-					)
-				}}
-			</Formik>
-			<TodosTable data={data} loading={isPending} />
+						return (
+							<Form>
+								<Box className="searchbar">
+									<TextField {...taskInputProps} />
+									<Button
+										size="small"
+										variant="contained"
+										color="success"
+										type="submit"
+										disabled={
+											taskMutation.isPending ||
+											values.task === "" ||
+											formMode === "EDIT"
+										}>
+										Create Task
+									</Button>
+								</Box>
+							</Form>
+						)
+					}}
+				</Formik>
+			)}
+
+			<TodosTable data={data.items} loading={isPending} />
 		</TableContainerWrapper>
 	)
 }

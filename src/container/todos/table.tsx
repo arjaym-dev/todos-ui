@@ -15,6 +15,7 @@ import { TTask } from "@/shared/types/todos"
 import useTodoStore from "@/shared/zustand/todos"
 
 import { requestEditTask, requestDeleteTaskMutation } from "./request"
+import ArrayCollect from "@/shared/lib/array-collect"
 
 const TRow: React.FC<TTask> = (row) => {
 	const { formMode, edit, user, initialState, setFormMode, setEditTask } =
@@ -67,6 +68,18 @@ const TRow: React.FC<TTask> = (row) => {
 		token: user.token,
 	})
 	const deleteTaskMutation = requestDeleteTaskMutation({ token: user.token })
+	const rowLinks = row.links
+	const updateTodosPerm = ArrayCollect.getObjByKey(
+		rowLinks,
+		"rel",
+		"edit-todos",
+	)
+	const deleteTodosPerm = ArrayCollect.getObjByKey(
+		rowLinks,
+		"rel",
+		"delete-todos",
+	)
+
 	return (
 		<TableRow>
 			<TableCell>{row._id}</TableCell>
@@ -95,20 +108,24 @@ const TRow: React.FC<TTask> = (row) => {
 						</React.Fragment>
 					) : (
 						<React.Fragment>
-							<Button
-								size="small"
-								variant="contained"
-								color="success"
-								onClick={handleEdit}>
-								Edit
-							</Button>
-							<Button
-								size="small"
-								variant="contained"
-								color="error"
-								onClick={handleDelete}>
-								Delete
-							</Button>
+							{updateTodosPerm && (
+								<Button
+									size="small"
+									variant="contained"
+									color="success"
+									onClick={handleEdit}>
+									Edit
+								</Button>
+							)}
+							{deleteTodosPerm && (
+								<Button
+									size="small"
+									variant="contained"
+									color="error"
+									onClick={handleDelete}>
+									Delete
+								</Button>
+							)}
 						</React.Fragment>
 					)}
 				</Box>
